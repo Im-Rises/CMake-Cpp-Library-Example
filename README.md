@@ -4,9 +4,11 @@
 
 This is a simple example of a C++ library that can be built with CMake.
 
-All the examples are made to be compiled with CMake for Windows, Linux and macOS, except for some like PThreads that are only available on Linux.
+All the examples are made to be compiled with CMake for Windows, Linux and macOS, except for some like PThreads that are
+only available on Linux.
 
-Each directory contains a CMakeLists.txt file that is used to build the library, the complete explanation are in the README.md file of each directory.
+Each directory contains a CMakeLists.txt file that is used to build the library, the complete explanation are in the
+README.md file of each directory.
 
 ## Library list
 
@@ -47,13 +49,11 @@ Each directory contains a CMakeLists.txt file that is used to build the library,
 ## GitHub Actions
 
 [![CMake](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cmake.yml)
-[![Microsoft C++ Code Analysis](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/msvc.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/msvc.yml)
 [![cpp-linter](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cpp-linter.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cpp-linter.yml)
 
 The project is set with a set of different scripts:
 
 - CMake: This script is used to build the project.
-- Microsoft C++ Code Analysis: This script is used to check the code for security issues.
 - Cpp Linter: This script is used to check the code for security issues.
 
 ## Libraries

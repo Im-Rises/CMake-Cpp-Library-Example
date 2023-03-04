@@ -1,9 +1,14 @@
-#define SDL_MAIN_HANDLED
+#if defined(_WIN32)
 #include <SDL.h>
+#elif defined(__linux__)
+#include <SDL2/SDL.h>
+#elif defined(__APPLE__)
+#include <SDL2/SDL.h>
+#endif
 
 int main(int argc, char* argv[]) {
-    SDL_Window* window = NULL;
-    SDL_Renderer* renderer = NULL;
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -11,14 +16,14 @@ int main(int argc, char* argv[]) {
         return -1;
     }
     window = SDL_CreateWindow("Hello", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    if (window == NULL)
+    if (window == nullptr)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return -1;
     }
 
     renderer = SDL_CreateRenderer(window, -1, 0);
-    if (renderer == NULL)
+    if (renderer == nullptr)
     {
         SDL_Log("Failed to create renderer: %s", SDL_GetError());
         return -1;
@@ -43,9 +48,9 @@ int main(int argc, char* argv[]) {
 
     // free
     SDL_DestroyRenderer(renderer);
-    renderer = NULL;
+    renderer = nullptr;
     SDL_DestroyWindow(window);
-    window = NULL;
+    window = nullptr;
     SDL_Quit();
 
     return 0;
