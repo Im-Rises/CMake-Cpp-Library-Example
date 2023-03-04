@@ -1,5 +1,7 @@
 # SDL2
 
+Version: 2.26.3
+
 For this example, I used the SDL2 library to create a window.
 
 The binaries used for Windows compilation are for the MSVC compiler (Visual Studio 2019). If you want to use another

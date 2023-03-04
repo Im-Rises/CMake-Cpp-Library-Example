@@ -1,14 +1,41 @@
-# Include OpenCL headers
-include_directories(${OpenCL_INCLUDE_DIRS})
-
-# Add executable
-add_executable(${PROJECT_NAME} "main.cpp")
+# Find .cmake files and include OpenCL headers
+if (WIN32)
+    list(APPEND CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/dependencies/OpenCL/share/cmake/OpenCL)
+    include_directories(${CMAKE_SOURCE_DIR}/dependencies/OpenCL/include)
+endif ()
 
 # Find OpenCL
-find_package(OpenCL REQUIRED)
+if (WIN32)
+    find_package(OpenCL CONFIG REQUIRED)
+else ()
+    find_package(OpenCL REQUIRED)
+endif ()
 
-# Link OpenCL
-link_directories(${OpenCL_LIBRARY})
+# Create executable target
+add_executable(${PROJECT_NAME} main.cpp)
 
-# Link executable
-target_link_libraries(${PROJECT_NAME} OpenCL::OpenCL)
+if (WIN32)
+    # Link OpenCL library
+    target_link_libraries(${PROJECT_NAME} PRIVATE OpenCL::OpenCL)
+else ()
+    # Include OpenCL headers
+    target_include_directories(${PROJECT_NAME} PRIVATE ${OpenCL_INCLUDE_DIR})
+    # Link OpenCL library
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${OpenCL_LIBRARIES})
+endif ()
+
+## Add executable
+#add_executable(${PROJECT_NAME} "main.cpp")
+#
+### Find OpenCL
+#find_package(OpenCL REQUIRED)
+#
+### Include OpenCL headers
+##include_directories(${OpenCL_INCLUDE_DIRS})
+#include_directories(${CMAKE_SOURCE_DIR}/dependencies/OpenCL/include)
+#
+### Link OpenCL
+##link_directories(${OpenCL_LIBRARY})
+#
+### Link executable
+##target_link_libraries(${PROJECT_NAME} OpenCL)
