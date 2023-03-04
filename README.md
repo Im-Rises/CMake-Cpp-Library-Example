@@ -35,12 +35,15 @@ README.md file of each directory.
 - [x] PThreads
 - [x] SDL2
 - [x] SFML
-- [ ] Emscripten compilation
 
 ## Library not documented
 
 - [ ] Qt
 - [ ] ...
+
+## Compilator list
+
+- [ ] Emscripten compilation
 
 ## How to compile
 

@@ -1,2 +1,4 @@
 * text=auto eol=lf
 dependencies/** linguist-vendored
+Lib_OpenMPI/** linguist-vendored
+Lib_OpenCL/** linguist-vendored
