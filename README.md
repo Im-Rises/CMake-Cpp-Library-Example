@@ -136,18 +136,39 @@ cmake --build ./build --config Release
 The project is set with a set of different scripts:
 
 - CMake: This script is used to build the project.
-- Cpp Linter: This script is used to check the code for security issues.
+- Cpp Linter: This script is used to check the code quality.
 
 ## Libraries
 
+OpenCL:  
+<https://www.khronos.org/opencl/>
+
+OpenCV:  
+<https://opencv.org/>
+
 OpenMP:  
 <https://www.openmp.org/>
+
+OpenMPI:  
+<https://www.open-mpi.org/>
 
 SDL2:  
 <https://www.libsdl.org/>
 
 SFML:  
 <https://www.sfml-dev.org/>
+
+GLFW:  
+<https://www.glfw.org/>
+
+GLAD:  
+<https://glad.dav1d.de/>
+
+ImGui:  
+<https://github.com/ocornut/imgui>
+
+OpenGL:  
+<https://www.opengl.org/>
 
 ## Documentation
 
