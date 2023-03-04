@@ -4,7 +4,7 @@
 
 This is a simple example of a C++ library that can be built with CMake.
 
-All the examples are made to be compiled with CMake for Windows, Linux and MacOS, except for some like PThreads that are only available on Linux.
+All the examples are made to be compiled with CMake for Windows, Linux and macOS, except for some like PThreads that are only available on Linux.
 
 Each directory contains a CMakeLists.txt file that is used to build the library, the complete explanation are in the README.md file of each directory.
 
@@ -52,15 +52,14 @@ Each directory contains a CMakeLists.txt file that is used to build the library,
 
 The project is set with a set of different scripts:
 
-- CodeQL: This script is used to check the code for security issues.
 - CMake: This script is used to build the project.
-- Cpp Cmake Publish: This script is used to publish the project on GitHub.
-- Flawfinder: This script is used to check the code for security issues.
 - Microsoft C++ Code Analysis: This script is used to check the code for security issues.
 - Cpp Linter: This script is used to check the code for security issues.
+
 ## Libraries
 
-PLACEHOLDER
+SDL2:  
+<https://www.libsdl.org/>
 
 ## Documentation
 
@@ -68,7 +67,7 @@ PLACEHOLDER
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contributors
 

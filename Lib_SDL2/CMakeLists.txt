@@ -10,7 +10,7 @@ add_executable(${PROJECT_NAME} main.cpp)
 
 # Link the SDL2 library
 find_package(SDL2 REQUIRED)
-target_link_libraries(${PROJECT_NAME} SDL2)
+target_link_libraries(${PROJECT_NAME} SDL2::SDL2)
 
 ## Link the SDL2 library according to the OS
 #if(WIN32)
