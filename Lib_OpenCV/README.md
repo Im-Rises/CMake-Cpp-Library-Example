@@ -1,9 +1,8 @@
-# OpenCL
+# OpenCV
 
-Version: OpenCL 3.0
+Version: OpenCV 4.7.0
 
-OpenCL is a framework for writing programs that execute across heterogeneous platforms consisting of CPUs, GPUs, DSPs,
-FPGAs, and other processors or hardware accelerators.
+OpenCV is a library of programming functions mainly aimed at real-time computer vision.
 
 ## How to compile
 
@@ -13,23 +12,23 @@ According to your OS, the build setup is different. Check the appropriate indica
 
 #### Windows
 
-For windows, you need to install the OpenCL SDK from the Khronos website:  
-<https://www.khronos.org/opencl/>
+For windows, you need to install the OpenCV SDK from the website below:  
+<https://opencv.org/releases/>
 
 #### Linux
 
-Linux, needs the OpenCL development libraries:
+Linux, needs the OpenCV development libraries:
 
 ```bash
-sudo apt install ocl-icd-opencl-dev
+sudo apt install libopencv-dev
 ```
 
 #### MacOS
 
-Install the OpenCL development libraries with Homebrew:
+Install the OpenCV development libraries with Homebrew:
 
 ```bash
-brew install opencl-headers
+brew install opencv
 ```
 
 ### Build

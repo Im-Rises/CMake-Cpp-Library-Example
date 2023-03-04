@@ -1,15 +1,14 @@
 # OpenMPI
 
+Version: 4.0.3
+
 ## How to compile
 
 According to your OS, the build setup is different. Check the appropriate indication according to your os below.
 
 ### Setup
 
-#### Windows
-
-For windows, you need to install the OpenMPI SDK from the Khronos website:  
-<https://www.open-mpi.org>
+OpenMPI is only available for Linux and macOS.
 
 #### Linux
 
