@@ -1,6 +1,5 @@
 /*
  * This file is an example of using OpenCL to implement Floyd-Warshall algorithm.
- * The algorithm is implemented in OpenCL kernel function in program.cl file.
  * It is one of my project, which you can find details about in the GitHub link below:
  * https://github.com/Im-Rises/cFloydWarshallParallel/tree/main
  */

@@ -19,6 +19,9 @@ else ()
     project("Lib_OpenMP")
     add_subdirectory(${PROJECT_NAME})
 
+    project("Lib_OpenMPI")
+    add_subdirectory(${PROJECT_NAME})
+
     project("Lib_PThreads")
     add_subdirectory(${PROJECT_NAME})
 
