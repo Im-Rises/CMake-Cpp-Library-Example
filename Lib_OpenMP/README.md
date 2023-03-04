@@ -24,6 +24,8 @@ Windows has no setup needed. It is normally already installed on your computer o
 
 #### Linux
 
+Linux, needs the OpenMP development libraries:
+
 ```bash
 sudo apt install libomp-dev
 ```

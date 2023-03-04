@@ -10,12 +10,17 @@ only available on Linux.
 Each directory contains a CMakeLists.txt file that is used to build the library, the complete explanation are in the
 README.md file of each directory.
 
+## Todo
+
+- [ ] Create a GitHub Action for each library
+- [ ] Add more libraries
+
 ## Library list
 
 - [ ] GLFW + GLAD + OpenGL
 - [ ] GLFW + GLAD + OpenGL + ImGui
 - [x] OpenMP
-- [ ] OpenCL
+- [x] OpenCL
 - [ ] OpenMPI
 - [ ] OpenCV
 - [x] PThreads
@@ -34,18 +39,6 @@ README.md file of each directory.
 - [ ] Boost
 - [ ] Qt
 - [ ] ...
-
-## To do list
-
-- [ ] Add more libraries
-- [ ] Add more examples
-- [ ] Add more tests
-- [ ] Add more documentation
-- [ ] Add more comments
-- [ ] Add more code
-- [ ] Add more features
-- [ ] Add more bugs
-- [ ] Add more issues
 
 ## GitHub Actions
 

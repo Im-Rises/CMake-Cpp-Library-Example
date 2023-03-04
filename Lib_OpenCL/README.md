@@ -8,12 +8,15 @@ According to your OS, the build setup is different. Check the appropriate indica
 
 #### Windows
 
-Windows has no setup needed. It is normally already installed on your computer or your compiler will install it for you.
+For windows, you need to install the OpenCL SDK from the Khronos website:  
+<https://www.khronos.org/opencl/>
 
 #### Linux
 
+Linux, needs the OpenCL development libraries:
+
 ```bash
-sudo apt install libomp-dev
+sudo apt install ocl-icd-opencl-dev
 ```
 
 #### MacOS
@@ -21,7 +24,7 @@ sudo apt install libomp-dev
 Install the OpenCL development libraries with Homebrew:
 
 ```bash
-brew install libomp
+brew install opencl-headers
 ```
 
 ### Build
