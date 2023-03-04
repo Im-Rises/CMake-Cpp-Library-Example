@@ -12,16 +12,16 @@ README.md file of each directory.
 
 ## Library list
 
+- [ ] GLFW + GLAD + OpenGL
+- [ ] GLFW + GLAD + OpenGL + ImGui
 - [x] OpenMP
-- [x] PThreads
-- [x] SDL2
-- [x] SFML
 - [ ] OpenCL
 - [ ] OpenMPI
 - [ ] OpenCV
+- [x] PThreads
+- [x] SDL2
+- [x] SFML
 - [ ] Emscripten compilation
-- [ ] GLFW + GLAD + OpenGL
-- [ ] GLFW + GLAD + OpenGL + ImGui
 
 ## Library with different examples
 

@@ -1,10 +1,4 @@
-# SDL2
-
-For this example, I used the SDL2 library to create a window.
-
-The binaries used for Windows compilation are for the MSVC compiler (Visual Studio 2019). If you want to use another
-compiler, you will have to replace the correct `.lib` and `.dll` files by the ones from the compiler you use MinGW,
-etc...
+# OpenCL
 
 ## How to compile
 
@@ -14,25 +8,20 @@ According to your OS, the build setup is different. Check the appropriate indica
 
 #### Windows
 
-No step needed, the files are already in the `dependencies` folder.
-Be sure to put the `SDL2.dll` file next to your executable, if not the program will compile and start, but it'll end up
-crashing immediately. The dll file is located in the `dependencies\SDL2\lib\x64` folder.
-
-If you want to use another compiler, you will have to replace the correct `.lib` and `.dll` files by the ones from the
-compiler you use MinGW, etc...
+Windows has no setup needed. It is normally already installed on your computer or your compiler will install it for you.
 
 #### Linux
 
 ```bash
-sudo apt install libsdl2-dev
+sudo apt install libomp-dev
 ```
 
 #### MacOS
 
-Install the SDL2 development libraries with Homebrew:
+Install the OpenCL development libraries with Homebrew:
 
 ```bash
-brew install sdl2
+brew install libomp
 ```
 
 ### Build

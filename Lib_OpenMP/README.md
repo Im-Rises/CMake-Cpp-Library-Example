@@ -1,10 +1,12 @@
 # OpenMP
 
-For this example, I used the OpenMP library to create a window and display a texture.
+For this example, I used the OpenMP to do some parallel computing.
 
-The binaries used for Windows compilation are for the MSVC compiler (Visual Studio 2019). If you want to use another
-compiler, you will have to replace the correct `.lib` and `.dll` files by the ones from the compiler you use MinGW,
-etc...
+> **Note:**   
+> Be sure to set the `OpenMP` linking in the `CMakeLists.txt` file to the C version if you want to use the C version of
+> OpenMP
+> Example: `target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)`
+> Become: `target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_C)`
 
 ## How to compile
 
@@ -35,7 +37,7 @@ brew install libomp
 Once you have set up your OS you can now build the project.
 You can either load it with your IDE (Visual Studio, Clion, etc...), or use the command line.
 
-To use the command line build, type the following command at the proejct root folder.
+To use the command line build, type the following command at the project root folder.
 
 ```bash
 cmake -B <output directory> -DCMAKE_BUILD_TYPE=<build optimization flag>
