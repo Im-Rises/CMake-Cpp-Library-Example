@@ -16,6 +16,9 @@ else ()
     project("Lib_OpenCL")
     add_subdirectory(${PROJECT_NAME})
 
+    project("Lib_OpenCV")
+    add_subdirectory(${PROJECT_NAME})
+
     project("Lib_OpenMP")
     add_subdirectory(${PROJECT_NAME})
 
@@ -29,5 +32,11 @@ else ()
     add_subdirectory(${PROJECT_NAME})
 
     project("Lib_SFML")
+    add_subdirectory(${PROJECT_NAME})
+
+    project("Libs-glfw-glad-opengl")
+    add_subdirectory(${PROJECT_NAME})
+
+    project("Libs-glfw-glad-opengl-imgui")
     add_subdirectory(${PROJECT_NAME})
 endif ()

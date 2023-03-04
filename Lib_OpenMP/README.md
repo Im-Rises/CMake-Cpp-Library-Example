@@ -2,13 +2,13 @@
 
 For this example, I used the OpenMP to do some parallel computing.
 
-> **Note:**   
+> **Note**   
 > Be sure to set the `OpenMP` linking in the `CMakeLists.txt` file to the C version if you want to use the C version of
 > OpenMP
 > Example: `target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)`
 > Become: `target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_C)`
 
-> **Warning:**  
+> **Warning**  
 > For unknown reasons, the OpenMP library is not working on macOS.
 > If you have any idea why, please let me know.
 

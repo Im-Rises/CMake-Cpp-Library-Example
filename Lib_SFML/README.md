@@ -25,6 +25,8 @@ compiler you use MinGW, etc...
 
 #### Linux
 
+For Linux, you will need to install the SFML development libraries.
+
 ```bash
 sudo apt-get install libsfml-dev
 ```
