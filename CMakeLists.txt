@@ -4,6 +4,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+project("Lib_OpenMP")
+add_subdirectory(${PROJECT_NAME})
+
 project("Lib_PThreads")
 add_subdirectory(${PROJECT_NAME})
 

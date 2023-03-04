@@ -21,6 +21,7 @@ jobs:
         run: |
           sudo apt-get install libsdl2-dev
           sudo apt-get install libsfml-dev
+          sudo apt-get install libomp-dev
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -66,6 +67,7 @@ jobs:
         run: |
           brew install sdl2
           brew install sfml
+          brew install libomp
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.

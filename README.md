@@ -12,12 +12,12 @@ README.md file of each directory.
 
 ## Library list
 
+- [x] OpenMP
 - [x] PThreads
 - [x] SDL2
 - [x] SFML
 - [ ] OpenCL
 - [ ] OpenMPI
-- [ ] OpenMP
 - [ ] OpenCV
 - [ ] Emscripten compilation
 - [ ] GLFW + GLAD + OpenGL
