@@ -23,19 +23,3 @@ else ()
     # Link OpenCL library
     target_link_libraries(${PROJECT_NAME} PRIVATE ${OpenCL_LIBRARIES})
 endif ()
-
-## Add executable
-#add_executable(${PROJECT_NAME} "main.cpp")
-#
-### Find OpenCL
-#find_package(OpenCL REQUIRED)
-#
-### Include OpenCL headers
-##include_directories(${OpenCL_INCLUDE_DIRS})
-#include_directories(${CMAKE_SOURCE_DIR}/dependencies/OpenCL/include)
-#
-### Link OpenCL
-##link_directories(${OpenCL_LIBRARY})
-#
-### Link executable
-##target_link_libraries(${PROJECT_NAME} OpenCL)
