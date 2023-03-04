@@ -7,3 +7,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 project("Lib_SDL2")
 add_subdirectory(${PROJECT_NAME})
 
+project("Lib_SFML")
+add_subdirectory(${PROJECT_NAME})
+

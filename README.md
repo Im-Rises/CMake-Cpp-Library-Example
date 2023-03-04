@@ -13,7 +13,7 @@ README.md file of each directory.
 ## Library list
 
 - [x] SDL2
-- [ ] SFML
+- [x] SFML
 - [ ] GLFW
 - [ ] OpenCL
 - [ ] OpenMPI
