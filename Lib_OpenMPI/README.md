@@ -1,12 +1,4 @@
-# SFML
-
-Version: SFML 2.5.1
-
-For this example, I used the SFML library to create a window and display a circle.
-
-The binaries used for Windows compilation are for the MSVC compiler (Visual Studio 2019). If you want to use another
-compiler, you will have to replace the correct `.lib` and `.dll` files by the ones from the compiler you use MinGW,
-etc...
+# OpenMPI
 
 ## How to compile
 
@@ -16,25 +8,23 @@ According to your OS, the build setup is different. Check the appropriate indica
 
 #### Windows
 
-No step needed, the files are already in the `dependencies` folder.
-Be sure to put the `SFML.dll` files next to your executable, if not the program will compile and start, but it'll end up
-crashing immediately. The dll files are located in the `dependencies\SFML\lib` folder.
-
-If you want to use another compiler, you will have to replace the correct `.lib` and `.dll` files by the ones from the
-compiler you use MinGW, etc...
+For windows, you need to install the OpenMPI SDK from the Khronos website:  
+<https://www.open-mpi.org>
 
 #### Linux
 
+Linux, needs the OpenMPI development libraries:
+
 ```bash
-sudo apt-get install libsfml-dev
+sudo apt-get install openmpi-bin openmpi-common libopenmpi-dev libgtk2.0-dev
 ```
 
 #### MacOS
 
-Install the SFML development libraries with Homebrew:
+Install the OpenMPI development libraries with Homebrew:
 
 ```bash
-brew install sfml
+brew install open-mpi
 ```
 
 ### Build

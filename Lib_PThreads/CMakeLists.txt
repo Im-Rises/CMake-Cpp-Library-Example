@@ -11,5 +11,5 @@ if (UNIX)
     # Link pthreads
     target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 else ()
-    message(WARNING "pthread cannot be compiled for other systems than UNIX (skipping build)")
+    message("pthread cannot be compiled for other systems than UNIX (skipping build)")
 endif ()
