@@ -51,17 +51,18 @@ int main(int argc, char** argv) {
         printf("Started with %d processes\n", p);
     }
 
-    if (argc != 2)
-    {
-        if (!id)
-        {
-            printf("Command line: %s <m>\n", argv[0]);
-        }
-        MPI_Finalize();
-        exit(1);
-    }
-
-    n = atoi(argv[1]);
+    //    if (argc != 2)
+    //    {
+    //        if (!id)
+    //        {
+    //            printf("Command line: %s <m>\n", argv[0]);
+    //        }
+    //        MPI_Finalize();
+    //        exit(1);
+    //    }
+    //
+    //    n = atoi(argv[1]);
+    n = 10;
 
     if (sqrt(n) >= (double)n / p)
     {

@@ -16,7 +16,7 @@ For windows, you need to install the OpenMPI SDK from the Khronos website:
 Linux, needs the OpenMPI development libraries:
 
 ```bash
-sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
+sudo apt-get install openmpi-bin openmpi-common libopenmpi-dev libgtk2.0-dev
 ```
 
 #### MacOS
