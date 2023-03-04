@@ -1,7 +1,5 @@
 # SDL2
 
-Version: SDL2 2.26.3
-
 For this example, I used the SDL2 library to create a window and display a texture.
 
 The binaries used for Windows compilation are for the MSVC compiler (Visual Studio 2019). If you want to use another
@@ -12,7 +10,7 @@ etc...
 
 According to your OS, the build setup is different. Check the appropriate indication according to your os below.
 
-### Set up
+### Setup
 
 #### Windows
 

@@ -12,7 +12,7 @@ etc...
 
 According to your OS, the build setup is different. Check the appropriate indication according to your os below.
 
-### Set up
+### Setup
 
 #### Windows
 
