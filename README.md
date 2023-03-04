@@ -59,12 +59,19 @@ The project is set with a set of different scripts:
 
 ## Libraries
 
+OpenMP:  
+<https://www.openmp.org/>
+
 SDL2:  
 <https://www.libsdl.org/>
 
+SFML:  
+<https://www.sfml-dev.org/>
+
 ## Documentation
 
-PLACEHOLDER
+cliutils:  
+<https://cliutils.gitlab.io/modern-cmake/chapters/packages/OpenMP.html>
 
 ## License
 
