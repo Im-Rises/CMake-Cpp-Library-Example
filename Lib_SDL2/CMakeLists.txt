@@ -1,24 +1,30 @@
-# Include the SDL2 include directory
-include_directories(${CMAKE_SOURCE_DIR}/dependencies/SDL2/include)
-
 # Add SDL2 to prefix path
-#list(APPEND CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/dependencies/SDL2/cmake)
-set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/dependencies/SDL2/cmake)
+if (WIN32)
+    list(APPEND CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/dependencies/SDL2/cmake)
+endif ()
 
 # Create the executable
 add_executable(${PROJECT_NAME} main.cpp)
 
-# Link the SDL2 library
+# Find the SDL2 library
 find_package(SDL2 REQUIRED)
-target_link_libraries(${PROJECT_NAME} SDL2)
 
-## Link the SDL2 library according to the OS
-#if(WIN32)
-#    set(SDL2PATH ${CMAKE_SOURCE_DIR}/dependencies/SDL2/lib/)
-#    target_link_libraries(${PROJECT_NAME} ${SDL2PATH}x64/SDL2.lib)
-#elseif(UNIX)
-#    find_package(SDL2 REQUIRED)
-#    target_link_libraries(${PROJECT_NAME} SDL2)
-#else()
-#    message(FATAL_ERROR "OS not configured in CMakeLists.txt")
-#endif()
+# Include the SDL2 include directory
+if (WIN32)
+    include_directories(${CMAKE_SOURCE_DIR}/dependencies/SDL2/include)
+elseif (UNIX)
+    include_directories(${SDL2_INCLUDE_DIRS})
+else ()
+    message(FATAL_ERROR "Unsupported platform")
+endif ()
+
+# Link the SDL2 library
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} SDL2::SDL2 SDL2::SDL2main)
+elseif (APPLE)
+    target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+elseif (UNIX)
+    target_link_libraries(${PROJECT_NAME} SDL2)
+else ()
+    message(FATAL_ERROR "Unsupported platform")
+endif ()
