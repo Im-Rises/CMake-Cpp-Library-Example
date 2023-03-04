@@ -2,3 +2,5 @@
 dependencies/** linguist-vendored
 Lib_OpenMPI/** linguist-vendored
 Lib_OpenCL/** linguist-vendored
+Libs-glfw-glad-opengl/** linguist-vendored
+Libs-glfw-glad-opengl-imgui/** linguist-vendored
