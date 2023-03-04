@@ -70,6 +70,7 @@ jobs:
           brew install sdl2
           brew install sfml
           brew install libomp
+          brew install opencl-icd-loader
           brew install opencl-headers
           brew install openmpi
 

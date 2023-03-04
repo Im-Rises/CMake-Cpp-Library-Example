@@ -29,6 +29,7 @@ sudo apt install ocl-icd-opencl-dev
 Install the OpenCL development libraries with Homebrew:
 
 ```bash
+brew install opencl-icd-loader
 brew install opencl-headers
 ```
 
