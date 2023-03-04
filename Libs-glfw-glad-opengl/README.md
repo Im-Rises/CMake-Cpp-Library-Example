@@ -1,12 +1,11 @@
-# SFML
+# glfw-glad-opengl
 
-Version: SFML 2.5.1
+Version: GLFW 3.3.8, GLAD 0.1.36, OpenGL 3.3
 
-For this example, I used the SFML library to create a window and display a circle.
+This is a simple CMake project that uses GLFW, GLAD and OpenGL, it creates an OpenGL window and draws a triangle.
 
-The binaries used for Windows compilation are for the MSVC compiler (Visual Studio 2019). If you want to use another
-compiler, you will have to replace the correct `.lib` and `.dll` files by the ones from the compiler you use MinGW,
-etc...
+The project use GLFW to create the window and handle the events, GLAD to load the OpenGL functions and OpenGL to draw
+the triangle.
 
 ## How to compile
 
@@ -17,26 +16,26 @@ According to your OS, the build setup is different. Check the appropriate indica
 #### Windows
 
 No step needed, the files are already in the `dependencies` folder.
-Be sure to put the `SFML.dll` files next to your executable, if not the program will compile and start, but it'll end up
-crashing immediately. The dll files are located in the `dependencies\SFML\lib` folder.
+Be sure to put the `glfw.dll` files next to your executable, if not the program will compile and start, but it'll end up
+crashing immediately. The dll files are located in the `dependencies\glfw\lib` folder.
 
 If you want to use another compiler, you will have to replace the correct `.lib` and `.dll` files by the ones from the
 compiler you use MinGW, etc...
 
 #### Linux
 
-For Linux, you will need to install the SFML development libraries.
+For Linux, you will need to install the GLFW development libraries.
 
 ```bash
-sudo apt-get install libsfml-dev
+sudo apt-get install libglfw3-dev
 ```
 
 #### MacOS
 
-Install the SFML development libraries with Homebrew:
+Install the GLFW development libraries with Homebrew:
 
 ```bash
-brew install sfml
+brew install glfw
 ```
 
 ### Build

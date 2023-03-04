@@ -33,4 +33,10 @@ else ()
 
     project("Lib_SFML")
     add_subdirectory(${PROJECT_NAME})
+
+    project("Libs-glfw-glad-opengl")
+    add_subdirectory(${PROJECT_NAME})
+
+    project("Libs-glfw-glad-opengl-imgui")
+    add_subdirectory(${PROJECT_NAME})
 endif ()

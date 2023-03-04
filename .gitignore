@@ -7,6 +7,7 @@ out/
 *.idea/
 build/
 dependencies/OpenCV/
+dependencies/boost/
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudio,intellij+all,cmake
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,intellij+all,cmake

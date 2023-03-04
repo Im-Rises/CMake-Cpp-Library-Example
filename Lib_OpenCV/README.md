@@ -13,28 +13,50 @@ According to your OS, the build setup is different. Check the appropriate indica
 OpenCV is a library that needs to be installed on your system.
 I provided the setup files for windows, but you should build them yourself.
 To do so, follow the instructions on the OpenCV website:
-<https://docs.opencv.org/master/d3/d52/tutorial_windows_install.html>
+<https://docs.opencv.org/4.x/df/d65/tutorial_table_of_content_introduction.html>
+
+> **Warning:**
+> OpenCV is a very large library, and the compilation can take a long time.
+> Be also sure to always build the `Release` version of the library, the `Debug` have some issues.
 
 #### Windows
 
 For windows, you need to install the OpenCV SDK from the website below:  
 <https://opencv.org/releases/>
 
+Once you have download the `windows.exe` file, double-click on it to unpack the SDK.
+Then put the files in the `dependencies` folder of the project with this architecture:
+
+~~~
+Project
+├── dependencies
+│   ├── opencv
+│   │   ├── build
+│   │   │   |── *
+│   │   ├── sources
+│   │   │   |── *
+│   CMakeLists.txt
+│   ├── src
+│   │   |─── main.cpp
+│   │   |─── CMakelists.txt
+│   README.md
+~~~
+
 #### Linux
 
-Linux, needs the OpenCV development libraries:
+Linux, needs the OpenCV development libraries to be installed on your system.
+To do so, follow the instructions on the OpenCV website:
+<https://docs.opencv.org/4.x/df/d65/tutorial_table_of_content_introduction.html>
 
-```bash
-sudo apt install libopencv-dev
-```
+You don't need to put the OpenCV files in the `dependencies` folder.
 
 #### MacOS
 
-Install the OpenCV development libraries with Homebrew:
+MacOS, needs the OpenCV development libraries to be installed on your system.
+To do so, follow the instructions on the OpenCV website:
+<https://docs.opencv.org/4.x/df/d65/tutorial_table_of_content_introduction.html>
 
-```bash
-brew install opencv
-```
+You don't need to put the OpenCV files in the `dependencies` folder.
 
 ### Build
 

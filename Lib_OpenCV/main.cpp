@@ -1,30 +1,22 @@
-// #include <opencv2/opencv.hpp>
-//
-// int main(int argc, char* argv[]) {
-//     cv::Mat img = cv::imread(""
-//     cv::imshow("test", img);
-//     cv::waitKey(0);
-//     return 0;
-// }
+#include <opencv2/opencv.hpp>
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
 using namespace cv;
+
 int main() {
-    std::string image_path = samples::findFile("starry_night.jpg");
-    Mat img = imread(image_path, IMREAD_COLOR);
-    if (img.empty())
-    {
-        std::cout << "Could not read the image: " << image_path << std::endl;
-        return 1;
-    }
-    imshow("Display window", img);
-    int k = waitKey(0); // Wait for a keystroke in the window
-    if (k == 's')
-    {
-        imwrite("starry_night.png", img);
-    }
+    // Create a black window
+    Mat window = Mat::zeros(512, 512, CV_8UC3);
+
+    // Draw a rectangle on the window
+    rectangle(window, Point(100, 100), Point(400, 400), Scalar(0, 0, 255), 2);
+
+    // Display the window
+    imshow("Window", window);
+
+    // Wait for a key press
+    waitKey(0);
+
+    // Close all windows
+    destroyAllWindows();
+
     return 0;
 }

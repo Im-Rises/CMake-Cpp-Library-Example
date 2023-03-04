@@ -23,11 +23,6 @@ README.md file of each directory.
 
 ## Library list
 
-- [ ] Boost
-- [ ] GLFW + GLAD + OpenGL
-- [ ] GLFW + GLAD + OpenGL + ImGui
-- [ ] GLFW + Vulkan
-- [ ] GLFW + Vulkan + ImGui
 - [x] OpenMP
 - [x] OpenCL
 - [x] OpenCV
@@ -36,8 +31,16 @@ README.md file of each directory.
 - [x] SDL2
 - [x] SFML
 
+## Set of libraries
+
+- [ ] GLFW + GLAD + OpenGL
+- [ ] GLFW + GLAD + OpenGL + ImGui
+- [ ] GLFW + Vulkan
+- [ ] GLFW + Vulkan + ImGui
+
 ## Library not documented
 
+- [ ] Boost
 - [ ] Qt
 - [ ] ...
 
@@ -47,7 +50,7 @@ README.md file of each directory.
 
 ## How to compile
 
-According to your OS, the build setup is different. Check the appropriate indication according in the README.md file of
+According to your OS, the build setup is different. Check the appropriate indication according to the README.md file of
 each directory.
 
 You will need cmake to build the project. You can download it here:  
@@ -62,7 +65,7 @@ You will need cmake to build the project. You can download it here:
 Once you have set up your OS you can now build the project. You can either load it with your IDE (Visual Studio, Clion,
 etc...), or use the command line.
 
-To use the command line build, type the following command at the proejct root folder.
+To use the command line build, type the following command at the project root folder.
 
 ```bash
 cmake -B <build directory> -DCMAKE_BUILD_TYPE=<build optimization flag>
@@ -112,7 +115,14 @@ example:
 cmake --build ./build --config Release
 ```
 
-> **Note:**  
+> **Note**
+> You can build several projects at the same time by separating the project names with a semicolon.
+> example:
+> ```bash
+> cmake -S . -B ./build -D PROJECT_TO_BUILD=Lib_OpenMP;Lib_OpenCL -DCMAKE_BUILD_TYPE=Release
+> ```
+
+> **Warning**  
 > After building one of the project you may need to reset the cache of CMake to build another project.
 > To do so, start of the `clean.sh` or `clean.bat` script.
 
