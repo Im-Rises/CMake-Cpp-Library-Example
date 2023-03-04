@@ -4,20 +4,27 @@
 
 This is a simple example of a C++ library that can be built with CMake.
 
+All the examples are made to be compiled with CMake for Windows, Linux and MacOS, except for some like PThreads that are only available on Linux.
+
+Each directory contains a CMakeLists.txt file that is used to build the library, the complete explanation are in the README.md file of each directory.
+
 ## Library list
 
-- [ ] SDL2
+- [x] SDL2
 - [ ] SFML
 - [ ] GLFW
-- [ ] ImGui
-- [ ] OpenGL
 - [ ] OpenCL
 - [ ] OpenMPI
 - [ ] OpenMP
 - [ ] OpenCV
 - [ ] PThreads
 - [ ] Emscripten compilation
+
+## Library with different examples
+
+- [ ] OpenGL
 - [ ] Vulkan
+- [ ] ImGui
 
 ## Library not documented
 
