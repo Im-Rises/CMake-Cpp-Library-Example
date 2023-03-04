@@ -8,6 +8,10 @@ For this example, I used the OpenMP to do some parallel computing.
 > Example: `target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)`
 > Become: `target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_C)`
 
+> **Warning:**  
+> For unknown reasons, the OpenMP library is not working on macOS.
+> If you have any idea why, please let me know.
+
 ## How to compile
 
 According to your OS, the build setup is different. Check the appropriate indication according to your os below.
