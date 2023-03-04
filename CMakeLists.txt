@@ -13,6 +13,9 @@ if (PROJECT_TO_BUILD)
         add_subdirectory(${project})
     endforeach ()
 else ()
+    project("Lib_OpenCL")
+    add_subdirectory(${PROJECT_NAME})
+
     project("Lib_OpenMP")
     add_subdirectory(${PROJECT_NAME})
 

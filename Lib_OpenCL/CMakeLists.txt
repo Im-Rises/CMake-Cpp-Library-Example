@@ -2,7 +2,7 @@
 include_directories(${OpenCL_INCLUDE_DIRS})
 
 # Add executable
-add_executable(${PROJECT_NAME} "main.c")
+add_executable(${PROJECT_NAME} "main.cpp")
 
 # Find OpenCL
 find_package(OpenCL REQUIRED)

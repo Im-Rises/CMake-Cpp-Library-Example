@@ -17,8 +17,11 @@ README.md file of each directory.
 
 ## Library list
 
+- [ ] Boost
 - [ ] GLFW + GLAD + OpenGL
 - [ ] GLFW + GLAD + OpenGL + ImGui
+- [ ] GLFW + Vulkan
+- [ ] GLFW + Vulkan + ImGui
 - [x] OpenMP
 - [x] OpenCL
 - [ ] OpenMPI
@@ -28,15 +31,8 @@ README.md file of each directory.
 - [x] SFML
 - [ ] Emscripten compilation
 
-## Library with different examples
-
-- [ ] OpenGL
-- [ ] Vulkan
-- [ ] ImGui
-
 ## Library not documented
 
-- [ ] Boost
 - [ ] Qt
 - [ ] ...
 
