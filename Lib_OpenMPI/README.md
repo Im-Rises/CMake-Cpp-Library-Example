@@ -2,6 +2,9 @@
 
 Version: 4.0.3
 
+The OpenMPI example calculates twin primes in parallel. It is based on my project at the link below:
+https://github.com/Im-Rises/cTwinPrimeNumberParallel/tree/main
+
 ## How to compile
 
 According to your OS, the build setup is different. Check the appropriate indication according to your os below.

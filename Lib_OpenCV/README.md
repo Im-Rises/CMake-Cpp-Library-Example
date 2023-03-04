@@ -10,6 +10,11 @@ According to your OS, the build setup is different. Check the appropriate indica
 
 ### Setup
 
+OpenCV is a library that needs to be installed on your system.
+I provided the setup files for windows, but you should build them yourself.
+To do so, follow the instructions on the OpenCV website:
+<https://docs.opencv.org/master/d3/d52/tutorial_windows_install.html>
+
 #### Windows
 
 For windows, you need to install the OpenCV SDK from the website below:  

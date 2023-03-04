@@ -5,7 +5,7 @@ Version: OpenCL 3.0
 OpenCL is a framework for writing programs that execute across heterogeneous platforms consisting of CPUs, GPUs, DSPs,
 FPGAs, and other processors or hardware accelerators.
 
-> **Warning:**  
+> **Warning**  
 > For unknown reasons, the OpenCL library is not working on macOS.
 > If you have any idea why, please let me know.
 
@@ -14,6 +14,8 @@ FPGAs, and other processors or hardware accelerators.
 According to your OS, the build setup is different. Check the appropriate indication according to your os below.
 
 ### Setup
+
+OpenCL available on all platforms, but the setup is different.
 
 #### Windows
 
