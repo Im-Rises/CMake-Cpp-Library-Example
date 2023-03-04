@@ -33,8 +33,8 @@ README.md file of each directory.
 
 ## Set of libraries
 
-- [ ] GLFW + GLAD + OpenGL
-- [ ] GLFW + GLAD + OpenGL + ImGui
+- [x] GLFW + GLAD + OpenGL
+- [x] GLFW + GLAD + OpenGL + ImGui
 - [ ] GLFW + Vulkan
 - [ ] GLFW + Vulkan + ImGui
 
