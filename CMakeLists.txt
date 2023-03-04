@@ -16,6 +16,9 @@ else ()
     project("Lib_OpenCL")
     add_subdirectory(${PROJECT_NAME})
 
+    project("Lib_OpenCV")
+    add_subdirectory(${PROJECT_NAME})
+
     project("Lib_OpenMP")
     add_subdirectory(${PROJECT_NAME})
 

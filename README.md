@@ -30,8 +30,8 @@ README.md file of each directory.
 - [ ] GLFW + Vulkan + ImGui
 - [x] OpenMP
 - [x] OpenCL
+- [x] OpenCV
 - [x] OpenMPI
-- [ ] OpenCV
 - [x] PThreads
 - [x] SDL2
 - [x] SFML
