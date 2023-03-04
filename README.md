@@ -119,12 +119,14 @@ cmake --build ./build --config Release
 > You can build several projects at the same time by separating the project names with a semicolon.
 > example:
 > ```bash
-> cmake -S . -B ./build -D PROJECT_TO_BUILD=Lib_OpenMP;Lib_OpenCL -DCMAKE_BUILD_TYPE=Release
+> cmake -S . -B ./build -D PROJECT_TO_BUILD="Lib_OpenMP;Lib_OpenCL" -DCMAKE_BUILD_TYPE=Release
 > ```
 
-> **Warning**  
-> After building one of the project you may need to reset the cache of CMake to build another project.
-> To do so, start of the `clean.sh` or `clean.bat` script.
+<!--
+[//]: # (> **Warning**  )
+[//]: # (> After building one of the project you may need to reset the cache of CMake to build another project.)
+[//]: # (> To do so, start of the `clean.sh` or `clean.bat` script.)
+-->
 
 ## GitHub Actions
 
