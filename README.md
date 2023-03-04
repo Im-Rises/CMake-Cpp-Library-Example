@@ -1,8 +1,14 @@
 # CMake-Cpp-Library-Example
 
+<p align="center">
+      <img src="https://user-images.githubusercontent.com/59691442/183268126-b3d19e66-8f2d-463a-805e-ae6ef7cc6c01.png" alt="cmakeLogo" style="height:60px;"/>
+      <img src="https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white" alt="cppLogo" style="height:60px;"/>
+      <img src="https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white" alt="cppLogo" style="height:60px;"/>
+</p>
+
 ## Description
 
-This is a simple example of a C++ library that can be built with CMake.
+This is a set of simple examples of how to use CMake to build C++ projects with different libraries.
 
 All the examples are made to be compiled with CMake for Windows, Linux and macOS, except for some like PThreads that are
 only available on Linux.
@@ -12,7 +18,7 @@ README.md file of each directory.
 
 ## Todo
 
-- [ ] Create a GitHub Action for each library
+- [ ] Create a cmake script for each library test or one job for each library
 - [ ] Add more libraries
 
 ## Library list
