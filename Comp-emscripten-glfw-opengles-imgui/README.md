@@ -23,6 +23,12 @@ You also need to have CMake installed. You can find instructions on how to
 install CMake here:  
 <https://cmake.org/install/>
 
+You also need to install glfw. You can install it by typing this command:
+
+```bash
+sudo apt install libglfw3-dev
+```
+
 > **Note**  
 > The project is configured for linux, using another OS may require some changes.
 > If you are using Windows, you can use WSL to build the project like it is recommended by Emscripten team.
