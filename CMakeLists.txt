@@ -13,6 +13,8 @@ if (PROJECT_TO_BUILD)
         add_subdirectory(${project})
     endforeach ()
 else ()
+    add_subdirectory("Comp-emscripten-glfw-opengles")
+
     project("Lib_OpenCL")
     add_subdirectory(${PROJECT_NAME})
 

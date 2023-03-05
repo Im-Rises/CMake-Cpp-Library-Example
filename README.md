@@ -128,16 +128,6 @@ cmake --build ./build --config Release
 [//]: # (> To do so, start of the `clean.sh` or `clean.bat` script.)
 -->
 
-## GitHub Actions
-
-[![CMake](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cmake.yml)
-[![cpp-linter](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cpp-linter.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cpp-linter.yml)
-
-The project is set with a set of different scripts:
-
-- CMake: This script is used to build the project.
-- Cpp Linter: This script is used to check the code quality.
-
 ## Libraries
 
 OpenCL:  
@@ -174,6 +164,16 @@ OpenGL:
 
 cliutils:  
 <https://cliutils.gitlab.io/modern-cmake/chapters/packages/OpenMP.html>
+
+## GitHub Actions
+
+[![CMake](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cmake.yml)
+[![cpp-linter](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cpp-linter.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cpp-linter.yml)
+
+The project is set with a set of different scripts:
+
+- CMake: This script is used to build the project.
+- Cpp Linter: This script is used to check the code quality.
 
 ## License
 
