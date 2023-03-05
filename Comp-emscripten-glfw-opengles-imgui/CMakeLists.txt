@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.14)
+
+if (UNIX AND NOT APPLE)
+    project("Comp-emscripten-glfw-opengles-imgui")
+
+    set(Dependency_Dir ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies)
+
+    if (EMSCRIPTEN)
+        set(CMAKE_EXECUTABLE_SUFFIX ".html")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_GLFW=3 -s FULL_ES3=1")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s FULL_ES3=1 -s WASM=0 -s ALLOW_MEMORY_GROWTH=1")
+    endif ()
+
+    include_directories(${Dependency_Dir})
+    include_directories(${Dependency_Dir}/glad/include)
+
+    add_executable(${PROJECT_NAME} main.cpp
+            ${Dependency_Dir}/glad/src/glad.c
+            ${Dependency_Dir}/imgui/imgui.cpp
+            ${Dependency_Dir}/imgui/imgui_demo.cpp
+            ${Dependency_Dir}/imgui/imgui_draw.cpp
+            ${Dependency_Dir}/imgui/imgui_impl_glfw.cpp
+            ${Dependency_Dir}/imgui/imgui_impl_opengl3.cpp
+            ${Dependency_Dir}/imgui/imgui_tables.cpp
+            ${Dependency_Dir}/imgui/imgui_widgets.cpp
+            )
+
+    target_link_libraries(${PROJECT_NAME} glfw)
+
+    if (EMSCRIPTEN)
+        file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/web)
+        set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/web)
+        set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
+    endif ()
+endif ()
