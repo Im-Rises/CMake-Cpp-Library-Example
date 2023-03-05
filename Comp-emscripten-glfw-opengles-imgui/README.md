@@ -13,6 +13,10 @@ Emscripten.
 > `cmake -B <output directory> -DCMAKE_BUILD_TYPE=<build optimization flag>`  
 > `cmake --build <output directory> --config <build optimization flag>`
 
+> **Note**
+> You can use the recommended index.html file from the ImGui repository, but you have to change the path to the
+> compiled javascript file in it. The file is located in the `dependencies/imgui/libs/emscripten/` directory.
+
 ## Setup
 
 Then you have to install Emscripten. You can find
