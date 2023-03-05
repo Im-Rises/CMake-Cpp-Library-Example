@@ -16,12 +16,13 @@ only available on Linux.
 Each directory contains a CMakeLists.txt file that is used to build the library, the complete explanation are in the
 README.md file of each directory.
 
-## Todo
+## List of examples
 
-- [ ] Create a cmake script for each library test or one job for each library
-- [ ] Add more libraries
+### Compilator list
 
-## Library list
+- [x] Emscripten compilation
+
+### Library list
 
 - [x] OpenMP
 - [x] OpenCL
@@ -31,22 +32,18 @@ README.md file of each directory.
 - [x] SDL2
 - [x] SFML
 
-## Set of libraries
+### Set of libraries
 
 - [x] GLFW + GLAD + OpenGL
 - [x] GLFW + GLAD + OpenGL + ImGui
 - [ ] GLFW + Vulkan
 - [ ] GLFW + Vulkan + ImGui
 
-## Library not documented
+### Library not documented
 
 - [ ] Boost
 - [ ] Qt
 - [ ] ...
-
-## Compilator list
-
-- [ ] Emscripten compilation
 
 ## How to compile
 
@@ -122,13 +119,10 @@ cmake --build ./build --config Release
 > cmake -S . -B ./build -D PROJECT_TO_BUILD="Lib_OpenMP;Lib_OpenCL" -DCMAKE_BUILD_TYPE=Release
 > ```
 
-<!--
-[//]: # (> **Warning**  )
-[//]: # (> After building one of the project you may need to reset the cache of CMake to build another project.)
-[//]: # (> To do so, start of the `clean.sh` or `clean.bat` script.)
--->
-
 ## Libraries
+
+EmScripten:  
+<https://emscripten.org/>
 
 OpenCL:  
 <https://www.khronos.org/opencl/>
@@ -168,6 +162,7 @@ cliutils:
 ## GitHub Actions
 
 [![CMake](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cmake.yml)
+[![Emscripten-CMake](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/emscripten-cmake.yml/badge.svg)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/emscripten-cmake.yml)
 [![cpp-linter](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cpp-linter.yml/badge.svg?branch=main)](https://github.com/Im-Rises/CMake-Cpp-Library-Example/actions/workflows/cpp-linter.yml)
 
 The project is set with a set of different scripts:

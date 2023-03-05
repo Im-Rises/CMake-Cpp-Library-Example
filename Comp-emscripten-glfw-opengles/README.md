@@ -1,5 +1,7 @@
 # Comp-emscripten-glfw-opengles
 
+Version: GLFW 3.3.8, GLAD 0.1.36, OpenGL 3.3, OpenGL ES 3.0
+
 To build the project, you need to use a UNIX system, like Ubuntu or if you're on Windows you can use WSL.
 
 The project is made to be buildable as a desktop application, but it can also be build as a web application with
