@@ -74,13 +74,15 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
+#ifdef __EMSCRIPTEN__
+    // Initialize OpenGL loader
+    if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress))
+        exit(1);
+#else
+    // Initialize OpenGL loader
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
+        exit(1);
+#endif
 
 
     // build and compile our shader program
