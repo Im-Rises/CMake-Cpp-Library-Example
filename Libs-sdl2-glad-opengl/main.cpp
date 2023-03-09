@@ -1,9 +1,11 @@
-/*
- * Code from https://learnopengl.com/Getting-started/Hello-Triangle
- */
-
 #include <glad/glad.h>
+#if defined(_WIN32)
+#include <SDL.h>
+#elif defined(__linux__)
 #include <SDL2/SDL.h>
+#elif defined(__APPLE__)
+#include <SDL2/SDL.h>
+#endif
 
 #include <iostream>
 
@@ -24,7 +26,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
                                    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
                                    "}\n\0";
 
-int main() {
+int main(int argc, char* argv[]) {
     // Setup SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
@@ -32,7 +34,7 @@ int main() {
         return -1;
     }
 
-// Decide GL+GLSL versions
+    // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
     // GL ES 2.0 + GLSL 100
     const char* glsl_version = "#version 300 es";
@@ -54,7 +56,7 @@ int main() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 #endif
 
-// From 2.0.18: Enable native IME.
+    // From 2.0.18: Enable native IME.
 #ifdef SDL_HINT_IME_SHOW_UI
     SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 #endif

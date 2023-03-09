@@ -9,7 +9,13 @@
 #include "imgui_impl_opengl3.h"
 #include <stdio.h>
 #include <iostream>
+#if defined(_WIN32)
 #include <SDL.h>
+#elif defined(__linux__)
+#include <SDL2/SDL.h>
+#elif defined(__APPLE__)
+#include <SDL2/SDL.h>
+#endif
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <SDL_opengles2.h>
 #else
@@ -81,11 +87,11 @@ int main(int, char**) {
 
     // Initialize OpenGL loader
 #ifdef __EMSCRIPTEN__
-                               // Initialize OpenGL loader
+    // Initialize OpenGL loader
     if (!gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress))
         exit(1);
 #else
-                               // Initialize OpenGL loader
+    // Initialize OpenGL loader
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         exit(1);
 #endif

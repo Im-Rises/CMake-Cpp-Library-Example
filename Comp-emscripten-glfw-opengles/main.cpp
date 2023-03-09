@@ -1,7 +1,3 @@
-/*
- * Code from https://learnopengl.com/Getting-started/Hello-Triangle
- */
-
 #ifdef __EMSCRIPTEN__
 #include "Emscripten_Starter.h"
 #endif
