@@ -20,7 +20,8 @@ README.md file of each directory.
 
 ### Compilator list
 
-- [x] Emscripten compilation
+- [x] Emscripten GLFW OpenGL ES 3.0 compilation
+- [ ] Emscripten SDL2 OpenGL ES 3.0 compilation
 
 ### Library list
 
@@ -36,6 +37,8 @@ README.md file of each directory.
 
 - [x] GLFW + GLAD + OpenGL
 - [x] GLFW + GLAD + OpenGL + ImGui
+- [x] SDL2 + GLAD + OpenGL
+- [x] SDL2 + GLAD + OpenGL + ImGui
 - [ ] GLFW + Vulkan
 - [ ] GLFW + Vulkan + ImGui
 

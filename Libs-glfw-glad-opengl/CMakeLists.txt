@@ -8,7 +8,7 @@ add_executable(${PROJECT_NAME} main.cpp
 
 # Find OpenGL and set OpenGL_GL_PREFERENCE to GLVND
 set(OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenGL 3.0 REQUIRED)
+find_package(OpenGL 3.3 REQUIRED)
 
 # Link OpenGL
 target_link_libraries(${PROJECT_NAME} OpenGL::GL)
