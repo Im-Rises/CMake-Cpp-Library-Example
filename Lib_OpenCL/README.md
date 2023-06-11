@@ -19,8 +19,8 @@ OpenCL available on all platforms, but the setup is different.
 
 #### Windows
 
-For windows, you need to install the OpenCL SDK from the Khronos website:  
-<https://www.khronos.org/opencl/>
+For windows, you need to install the OpenCL SDK from the Khronos Group.
+<https://github.com/KhronosGroup/OpenCL-SDK>
 
 #### Linux
 

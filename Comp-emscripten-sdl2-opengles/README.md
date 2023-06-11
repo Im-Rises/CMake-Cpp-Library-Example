@@ -27,7 +27,7 @@ compiler you use MinGW, etc...
 For Linux, you will need to install the sdl2 development libraries.
 
 ```bash
-sudo apt-get install libsdl2-dev
+sudo apt-get install libsdl23-dev
 ```
 
 #### MacOS

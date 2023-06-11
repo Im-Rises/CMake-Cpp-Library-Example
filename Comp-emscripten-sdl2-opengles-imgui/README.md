@@ -1,11 +1,18 @@
-# sdl2-glad-opengl
+# sdl2-glad-opengl-imgui-docking
 
-Version: SDL2 2.26.3, GLAD 0.1.36, OpenGL 3.3
+Version: SDL2 2.26.3, GLAD 0.1.36, OpenGL 3.3, ImGui Docking 1.89.3
 
 This is a simple CMake project that uses sdl2, GLAD and OpenGL, it creates an OpenGL window and draws a triangle.
 
 The project use sdl2 to create the window and handle the events, GLAD to load the OpenGL functions and OpenGL to draw
 the triangle.
+
+> **Note**  
+> This project use the ImGui docking branch, which is not yet merged into the main branch.
+> To use the main branch just replace the `imgui` folder with the one from the main branch and
+> command the line that enable docking and viewport in the `main.cpp` file.  
+> `io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;`  
+> `io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;`
 
 ## How to compile
 
@@ -27,7 +34,7 @@ compiler you use MinGW, etc...
 For Linux, you will need to install the sdl2 development libraries.
 
 ```bash
-sudo apt-get install libsdl2-dev
+sudo apt-get install libsdl23-dev
 ```
 
 #### MacOS

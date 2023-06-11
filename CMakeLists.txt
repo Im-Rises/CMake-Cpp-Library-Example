@@ -17,6 +17,10 @@ else ()
 
     add_subdirectory("Comp-emscripten-glfw-opengles-imgui")
 
+    add_subdirectory("Comp-emscripten-sdl2-opengles")
+
+    add_subdirectory("Comp-emscripten-sdl2-opengles-imgui")
+
     project("Lib_OpenCL")
     add_subdirectory(${PROJECT_NAME})
 
