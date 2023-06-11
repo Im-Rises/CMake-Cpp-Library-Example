@@ -11,9 +11,9 @@ if (UNIX AND NOT APPLE)
 
     if (EMSCRIPTEN)
         set(CMAKE_EXECUTABLE_SUFFIX ".html")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s FULL_ES3=1 -s WASM=1 -s ALLOW_MEMORY_GROWTH=1")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
     endif ()
-    
+
     include_directories(${Dependency_Dir})
     include_directories(${Dependency_Dir}/glad/include)
 
