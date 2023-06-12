@@ -30,17 +30,16 @@ if (UNIX AND NOT APPLE)
 
     target_link_libraries(${PROJECT_NAME} SDL2)
 
-
-    # Find OpenGL and set OpenGL_GL_PREFERENCE to GLVND
-    set(OpenGL_GL_PREFERENCE GLVND)
-    find_package(OpenGL 3.3 REQUIRED)
-
-    # Link OpenGL
-    target_link_libraries(${PROJECT_NAME} OpenGL::GL)
-
     if (EMSCRIPTEN)
         file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/web)
         set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/web)
         set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
-    endif ()
+    else()
+        # Find OpenGL and set OpenGL_GL_PREFERENCE to GLVND
+        set(OpenGL_GL_PREFERENCE GLVND)
+        find_package(OpenGL 3.3 REQUIRED)
+
+        # Link OpenGL
+        target_link_libraries(${PROJECT_NAME} OpenGL::GL)
+    endif()
 endif ()
