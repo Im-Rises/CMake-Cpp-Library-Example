@@ -35,15 +35,18 @@ const char* fragmentShaderSource = "#version 300 es\n"
 
 // Main code
 int main(int, char**) {
+    std::cout << "Before start" << std::endl;
     // Setup SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
         printf("Error: %s\n", SDL_GetError());
         return -1;
     }
+    std::cout << "After SDL_Init" << std::endl;
 
     // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
+    std::cout << "IMGUI_IMPL_OPENGL_ES2" << std::endl;
     // GL ES 2.0 + GLSL 100
     const char* glsl_version = "#version 300 es";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
@@ -51,6 +54,7 @@ int main(int, char**) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #elif defined(__APPLE__)
+    std::cout << "__APPLE__" << std::endl;
     // GL 3.2 Core + GLSL 150
     const char* glsl_version = "#version 330";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
@@ -58,6 +62,7 @@ int main(int, char**) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 #else
+    std::cout << "else" << std::endl;
     // GL 3.0 + GLSL 130
     const char* glsl_version = "#version 330";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
@@ -172,7 +177,6 @@ int main(int, char**) {
 #ifdef __EMSCRIPTEN__
     // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
     // You may manually call LoadIniSettingsFromMemory() to load settings from your own storage.
-    io.IniFilename = nullptr;
     EMSCRIPTEN_MAINLOOP_BEGIN
 #else
     while (!done)
