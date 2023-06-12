@@ -21,36 +21,36 @@ else ()
 
     add_subdirectory("Comp-emscripten-sdl2-opengles-imgui")
 
-    project("Lib_OpenCL")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Lib_OpenCV")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Lib_OpenMP")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Lib_OpenMPI")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Lib_PThreads")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Lib_SDL2")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Lib_SFML")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Libs-glfw-glad-opengl")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Libs-glfw-glad-opengl-imgui")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Libs-sdl2-glad-opengl")
-    add_subdirectory(${PROJECT_NAME})
-
-    project("Libs-sdl2-glad-opengl-imgui")
-    add_subdirectory(${PROJECT_NAME})
+#    project("Lib_OpenCL")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Lib_OpenCV")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Lib_OpenMP")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Lib_OpenMPI")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Lib_PThreads")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Lib_SDL2")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Lib_SFML")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Libs-glfw-glad-opengl")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Libs-glfw-glad-opengl-imgui")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Libs-sdl2-glad-opengl")
+#    add_subdirectory(${PROJECT_NAME})
+#
+#    project("Libs-sdl2-glad-opengl-imgui")
+#    add_subdirectory(${PROJECT_NAME})
 endif ()
