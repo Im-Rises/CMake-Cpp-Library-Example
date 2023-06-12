@@ -18,10 +18,10 @@ README.md file of each directory.
 
 ## List of examples
 
-### Compilator list
+### Emscripten Compilation list
 
-- [x] Emscripten GLFW OpenGL ES 3.0 compilation
-- [ ] Emscripten SDL2 OpenGL ES 3.0 compilation
+- [x] Emscripten GLFW OpenGL ES 3.0 WebGL2 compilation
+- [x] Emscripten SDL2 OpenGL ES 3.0 WebGL2 compilation
 
 ### Library list
 

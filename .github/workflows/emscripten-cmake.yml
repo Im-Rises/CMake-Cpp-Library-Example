@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: mymindstorm/setup-emsdk@v11
-
+        with:
+          version: 3.1.37
+        
       - name: Verify
         run: emcc -v
 
@@ -23,5 +25,11 @@ jobs:
           emcmake cmake .
           emmake make
           cd ../Comp-emscripten-glfw-opengles-imgui
+          emcmake cmake .
+          emmake make
+          cd ../Comp-emscripten-sdl2-opengles
+          emcmake cmake .
+          emmake make
+          cd ../Comp-emscripten-sdl2-opengles-imgui
           emcmake cmake .
           emmake make
