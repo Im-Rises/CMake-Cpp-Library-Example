@@ -11,7 +11,7 @@ if (UNIX AND NOT APPLE)
 
     if (EMSCRIPTEN)
         set(CMAKE_EXECUTABLE_SUFFIX ".html")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s FULL_ES3=1 -s WASM=1 -s ALLOW_MEMORY_GROWTH=1")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s USE_WEBGL2=1 -s FULL_ES3=1 -s WASM=1 -s ALLOW_MEMORY_GROWTH=1")
     endif ()
 
     include_directories(${Dependency_Dir})
@@ -27,12 +27,12 @@ if (UNIX AND NOT APPLE)
         file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/web)
         set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/web)
         set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
-    else()
+    else ()
         # Find OpenGL and set OpenGL_GL_PREFERENCE to GLVND
         set(OpenGL_GL_PREFERENCE GLVND)
         find_package(OpenGL 3.3 REQUIRED)
 
         # Link OpenGL
         target_link_libraries(${PROJECT_NAME} OpenGL::GL)
-    endif()
+    endif ()
 endif ()
