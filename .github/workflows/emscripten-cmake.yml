@@ -25,3 +25,9 @@ jobs:
           cd ../Comp-emscripten-glfw-opengles-imgui
           emcmake cmake .
           emmake make
+          cd ../Comp-emscripten-sdl2-opengles
+          emcmake cmake .
+          emmake make
+          cd ../Comp-emscripten-sdl2-opengles-imgui
+          emcmake cmake .
+          emmake make

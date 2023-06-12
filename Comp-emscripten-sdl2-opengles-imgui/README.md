@@ -1,79 +1,69 @@
-# sdl2-glad-opengl-imgui-docking
+# Comp-emscripten-sdl2-opengles-imgui
 
-Version: SDL2 2.26.3, GLAD 0.1.36, OpenGL 3.3, ImGui Docking 1.89.3
+Version: SDL2, GLAD 0.1.36, OpenGL 3.3, OpenGL ES 3.0, ImGui Docking 1.89.3
 
-This is a simple CMake project that uses sdl2, GLAD and OpenGL, it creates an OpenGL window and draws a triangle.
+To build the project, you need to use a UNIX system, like Ubuntu or if you're on Windows you can use WSL.
 
-The project use sdl2 to create the window and handle the events, GLAD to load the OpenGL functions and OpenGL to draw
-the triangle.
+The project is made to be buildable as a desktop application, but it can also be build as a web application with
+Emscripten.
 
 > **Note**  
-> This project use the ImGui docking branch, which is not yet merged into the main branch.
-> To use the main branch just replace the `imgui` folder with the one from the main branch and
-> command the line that enable docking and viewport in the `main.cpp` file.  
-> `io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;`  
-> `io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;`
+> The project can also be build as a desktop app, if you use directly your IDE or the normal CMake commands like
+> in the other examples:
+> `cmake -B <output directory> -DCMAKE_BUILD_TYPE=<build optimization flag>`  
+> `cmake --build <output directory> --config <build optimization flag>`
 
-## How to compile
+> **Note**
+> You can use the recommended index.html file from the ImGui repository, but you have to change the path to the
+> compiled javascript file in it. The file is located in the `dependencies/imgui/libs/emscripten/` directory.
 
-According to your OS, the build setup is different. Check the appropriate indication according to your os below.
+## Setup
 
-### Setup
+Then you have to install Emscripten. You can find
+instructions on how to install Emscripten here:  
+<https://emscripten.org/docs/getting_started/downloads.html>
 
-#### Windows
+You also need to have CMake installed. You can find instructions on how to
+install CMake here:  
+<https://cmake.org/install/>
 
-No step needed, the files are already in the `dependencies` folder.
-Be sure to put the `sdl2.dll` files next to your executable, if not the program will compile and start, but it'll end up
-crashing immediately. The dll files are located in the `dependencies\sdl2\lib` folder.
-
-If you want to use another compiler, you will have to replace the correct `.lib` and `.dll` files by the ones from the
-compiler you use MinGW, etc...
-
-#### Linux
-
-For Linux, you will need to install the sdl2 development libraries.
+You also need to install glfw. You can install it by typing this command:
 
 ```bash
-sudo apt-get install libsdl2-dev
+sudo apt install libsdl2-dev
 ```
 
-#### MacOS
+> **Note**  
+> The project is configured for linux, using another OS may require some changes.
+> If you are using Windows, you can use WSL to build the project like it is recommended by Emscripten team.
 
-Install the sdl2 development libraries with Homebrew:
+## Build the project
+
+Once you have Emscripten and CMake installed run this command in the project root directory:
 
 ```bash
-brew install sdl2
+emcmake cmake .
 ```
 
-### Build
-
-Once you have set up your OS you can now build the project.
-You can either load it with your IDE (Visual Studio, Clion, etc...), or use the command line.
-
-To use the command line build, type the following command at the proejct root folder.
+Then run this command in the same directory:
 
 ```bash
-cmake -B <output directory> -DCMAKE_BUILD_TYPE=<build optimization flag>
+emmake make
 ```
 
-example:
+The commands have to be run in the project Comp-emscripten-glfw-opengles directory.
+
+## Test the web build
+
+To test the project, you can use a web server. You can use the `python` web server for example:
+You can install python from here: <https://www.python.org/downloads/>
+
+Then run this command in the build directory:
 
 ```bash
-cmake -B ./build -DCMAKE_BUILD_TYPE=Release
+python -m http.server
 ```
 
-To set up cmake build in the `build` folder as a `release` optimized build.
+Be careful, to type the command in the build directory.
 
-Then, you can build the project with the following command:
-
-```bash
-cmake --build <output directory> --config <build optimization flag>
-```
-
-example:
-
-```bash
-cmake --build ./build --config Release
-```
-
-To build the project in the `build` folder as a `release` optimized build.
+Then open your browser and go to <http://localhost:8000>

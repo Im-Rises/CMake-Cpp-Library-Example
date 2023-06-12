@@ -47,7 +47,6 @@ int main(int, char**) {
     // Decide GL+GLSL versions
 // #if defined(IMGUI_IMPL_OPENGL_ES2)
 #if defined(__EMSCRIPTEN__)
-    std::cout << "IMGUI_IMPL_OPENGL_ES2" << std::endl;
     // GL ES 2.0 + GLSL 100
     const char* glsl_version = "#version 300 es";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
@@ -55,7 +54,6 @@ int main(int, char**) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #elif defined(__APPLE__)
-    std::cout << "__APPLE__" << std::endl;
     // GL 3.2 Core + GLSL 150
     const char* glsl_version = "#version 330";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
@@ -63,7 +61,6 @@ int main(int, char**) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 #else
-    std::cout << "else" << std::endl;
     // GL 3.0 + GLSL 130
     const char* glsl_version = "#version 330";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
