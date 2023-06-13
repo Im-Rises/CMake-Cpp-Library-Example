@@ -1,9 +1,11 @@
-# OpenCL
+# OpenCL_CPP
 
 Version: OpenCL 3.0
 
 OpenCL is a framework for writing programs that execute across heterogeneous platforms consisting of CPUs, GPUs, DSPs,
 FPGAs, and other processors or hardware accelerators.
+
+This version use the same API example as the C version, but with the C++ bindings.
 
 > **Warning**  
 > For unknown reasons, the OpenCL library is not working on macOS.
@@ -22,12 +24,14 @@ OpenCL available on all platforms, but the setup is different.
 For windows, you need to download the OpenCL SDK from the OpenCL-SDK github repository.
 <https://github.com/KhronosGroup/OpenCL-SDK>
 
+The release will already include the CPP bindings.
+
 #### Linux
 
 Linux, needs the OpenCL development libraries:
 
 ```bash
-sudo apt install opencl-headers ocl-icd-opencl-dev
+sudo apt install opencl-headers ocl-icd-opencl-dev -y
 ```
 
 #### MacOS

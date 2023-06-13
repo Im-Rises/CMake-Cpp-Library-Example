@@ -27,6 +27,7 @@ README.md file of each directory.
 
 - [x] OpenMP
 - [x] OpenCL
+- [x] OpenCL C++
 - [x] OpenCV
 - [x] OpenMPI
 - [x] PThreads
