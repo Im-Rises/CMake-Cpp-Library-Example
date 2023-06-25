@@ -1107,84 +1107,6 @@ function dbg(text) {
       }
     }
 
-  var UTF8Decoder = typeof TextDecoder != 'undefined' ? new TextDecoder('utf8') : undefined;
-  
-    /**
-     * Given a pointer 'idx' to a null-terminated UTF8-encoded string in the given
-     * array that contains uint8 values, returns a copy of that string as a
-     * Javascript String object.
-     * heapOrArray is either a regular array, or a JavaScript typed array view.
-     * @param {number} idx
-     * @param {number=} maxBytesToRead
-     * @return {string}
-     */
-  function UTF8ArrayToString(heapOrArray, idx, maxBytesToRead) {
-      var endIdx = idx + maxBytesToRead;
-      var endPtr = idx;
-      // TextDecoder needs to know the byte length in advance, it doesn't stop on
-      // null terminator by itself.  Also, use the length info to avoid running tiny
-      // strings through TextDecoder, since .subarray() allocates garbage.
-      // (As a tiny code save trick, compare endPtr against endIdx using a negation,
-      // so that undefined means Infinity)
-      while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
-  
-      if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
-        return UTF8Decoder.decode(heapOrArray.subarray(idx, endPtr));
-      }
-      var str = '';
-      // If building with TextDecoder, we have already computed the string length
-      // above, so test loop end condition against that
-      while (idx < endPtr) {
-        // For UTF8 byte structure, see:
-        // http://en.wikipedia.org/wiki/UTF-8#Description
-        // https://www.ietf.org/rfc/rfc2279.txt
-        // https://tools.ietf.org/html/rfc3629
-        var u0 = heapOrArray[idx++];
-        if (!(u0 & 0x80)) { str += String.fromCharCode(u0); continue; }
-        var u1 = heapOrArray[idx++] & 63;
-        if ((u0 & 0xE0) == 0xC0) { str += String.fromCharCode(((u0 & 31) << 6) | u1); continue; }
-        var u2 = heapOrArray[idx++] & 63;
-        if ((u0 & 0xF0) == 0xE0) {
-          u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
-        } else {
-          if ((u0 & 0xF8) != 0xF0) warnOnce('Invalid UTF-8 leading byte ' + ptrToString(u0) + ' encountered when deserializing a UTF-8 string in wasm memory to a JS string!');
-          u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heapOrArray[idx++] & 63);
-        }
-  
-        if (u0 < 0x10000) {
-          str += String.fromCharCode(u0);
-        } else {
-          var ch = u0 - 0x10000;
-          str += String.fromCharCode(0xD800 | (ch >> 10), 0xDC00 | (ch & 0x3FF));
-        }
-      }
-      return str;
-    }
-  
-  
-    /**
-     * Given a pointer 'ptr' to a null-terminated UTF8-encoded string in the
-     * emscripten HEAP, returns a copy of that string as a Javascript String object.
-     *
-     * @param {number} ptr
-     * @param {number=} maxBytesToRead - An optional length that specifies the
-     *   maximum number of bytes to read. You can omit this parameter to scan the
-     *   string until the first 0 byte. If maxBytesToRead is passed, and the string
-     *   at [ptr, ptr+maxBytesToReadr[ contains a null byte in the middle, then the
-     *   string will cut short at that byte index (i.e. maxBytesToRead will not
-     *   produce a string of exact length [ptr, ptr+maxBytesToRead[) N.B. mixing
-     *   frequent uses of UTF8ToString() with and without maxBytesToRead may throw
-     *   JS JIT optimizations off, so it is worth to consider consistently using one
-     * @return {string}
-     */
-  function UTF8ToString(ptr, maxBytesToRead) {
-      assert(typeof ptr == 'number');
-      return ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : '';
-    }
-  function ___assert_fail(condition, filename, line, func) {
-      abort('Assertion failed: ' + UTF8ToString(condition) + ', at: ' + [filename ? UTF8ToString(filename) : 'unknown filename', line, func ? UTF8ToString(func) : 'unknown function']);
-    }
-
   /** @constructor */
   function ExceptionInfo(excPtr) {
       this.excPtr = excPtr;
@@ -1268,40 +1190,215 @@ function dbg(text) {
       assert(false, 'Exception thrown, but exception catching is not enabled. Compile with -sNO_DISABLE_EXCEPTION_CATCHING or -sEXCEPTION_CATCHING_ALLOWED=[..] to catch.');
     }
 
-  function setErrNo(value) {
-      HEAP32[((___errno_location())>>2)] = value;
-      return value;
-    }
-  
-  var SYSCALLS = {varargs:undefined,get:function() {
-        assert(SYSCALLS.varargs != undefined);
-        SYSCALLS.varargs += 4;
-        var ret = HEAP32[(((SYSCALLS.varargs)-(4))>>2)];
-        return ret;
-      },getStr:function(ptr) {
-        var ret = UTF8ToString(ptr);
-        return ret;
-      }};
-  function ___syscall_fcntl64(fd, cmd, varargs) {
-  SYSCALLS.varargs = varargs;
-  
-      return 0;
-    }
-
-  function ___syscall_ioctl(fd, op, varargs) {
-  SYSCALLS.varargs = varargs;
-  
-      return 0;
-    }
-
-  function ___syscall_openat(dirfd, path, flags, varargs) {
-  SYSCALLS.varargs = varargs;
-  
-  abort('it should not be possible to operate on streams when !SYSCALLS_REQUIRE_FILESYSTEM');
-  }
-
   function _abort() {
       abort('native code called abort()');
+    }
+
+  function withStackSave(f) {
+      var stack = stackSave();
+      var ret = f();
+      stackRestore(stack);
+      return ret;
+    }
+  var JSEvents = {inEventHandler:0,removeAllEventListeners:function() {
+        for (var i = JSEvents.eventHandlers.length-1; i >= 0; --i) {
+          JSEvents._removeHandler(i);
+        }
+        JSEvents.eventHandlers = [];
+        JSEvents.deferredCalls = [];
+      },registerRemoveEventListeners:function() {
+        if (!JSEvents.removeEventListenersRegistered) {
+          __ATEXIT__.push(JSEvents.removeAllEventListeners);
+          JSEvents.removeEventListenersRegistered = true;
+        }
+      },deferredCalls:[],deferCall:function(targetFunction, precedence, argsList) {
+        function arraysHaveEqualContent(arrA, arrB) {
+          if (arrA.length != arrB.length) return false;
+  
+          for (var i in arrA) {
+            if (arrA[i] != arrB[i]) return false;
+          }
+          return true;
+        }
+        // Test if the given call was already queued, and if so, don't add it again.
+        for (var i in JSEvents.deferredCalls) {
+          var call = JSEvents.deferredCalls[i];
+          if (call.targetFunction == targetFunction && arraysHaveEqualContent(call.argsList, argsList)) {
+            return;
+          }
+        }
+        JSEvents.deferredCalls.push({
+          targetFunction: targetFunction,
+          precedence: precedence,
+          argsList: argsList
+        });
+  
+        JSEvents.deferredCalls.sort(function(x,y) { return x.precedence < y.precedence; });
+      },removeDeferredCalls:function(targetFunction) {
+        for (var i = 0; i < JSEvents.deferredCalls.length; ++i) {
+          if (JSEvents.deferredCalls[i].targetFunction == targetFunction) {
+            JSEvents.deferredCalls.splice(i, 1);
+            --i;
+          }
+        }
+      },canPerformEventHandlerRequests:function() {
+        return JSEvents.inEventHandler && JSEvents.currentEventHandler.allowsDeferredCalls;
+      },runDeferredCalls:function() {
+        if (!JSEvents.canPerformEventHandlerRequests()) {
+          return;
+        }
+        for (var i = 0; i < JSEvents.deferredCalls.length; ++i) {
+          var call = JSEvents.deferredCalls[i];
+          JSEvents.deferredCalls.splice(i, 1);
+          --i;
+          call.targetFunction.apply(null, call.argsList);
+        }
+      },eventHandlers:[],removeAllHandlersOnTarget:function(target, eventTypeString) {
+        for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+          if (JSEvents.eventHandlers[i].target == target && 
+            (!eventTypeString || eventTypeString == JSEvents.eventHandlers[i].eventTypeString)) {
+             JSEvents._removeHandler(i--);
+           }
+        }
+      },_removeHandler:function(i) {
+        var h = JSEvents.eventHandlers[i];
+        h.target.removeEventListener(h.eventTypeString, h.eventListenerFunc, h.useCapture);
+        JSEvents.eventHandlers.splice(i, 1);
+      },registerOrRemoveHandler:function(eventHandler) {
+        var jsEventHandler = function jsEventHandler(event) {
+          // Increment nesting count for the event handler.
+          ++JSEvents.inEventHandler;
+          JSEvents.currentEventHandler = eventHandler;
+          // Process any old deferred calls the user has placed.
+          JSEvents.runDeferredCalls();
+          // Process the actual event, calls back to user C code handler.
+          eventHandler.handlerFunc(event);
+          // Process any new deferred calls that were placed right now from this event handler.
+          JSEvents.runDeferredCalls();
+          // Out of event handler - restore nesting count.
+          --JSEvents.inEventHandler;
+        };
+        
+        if (eventHandler.callbackfunc) {
+          eventHandler.eventListenerFunc = jsEventHandler;
+          eventHandler.target.addEventListener(eventHandler.eventTypeString, jsEventHandler, eventHandler.useCapture);
+          JSEvents.eventHandlers.push(eventHandler);
+          JSEvents.registerRemoveEventListeners();
+        } else {
+          for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+            if (JSEvents.eventHandlers[i].target == eventHandler.target
+             && JSEvents.eventHandlers[i].eventTypeString == eventHandler.eventTypeString) {
+               JSEvents._removeHandler(i--);
+             }
+          }
+        }
+      },getNodeNameForTarget:function(target) {
+        if (!target) return '';
+        if (target == window) return '#window';
+        if (target == screen) return '#screen';
+        return (target && target.nodeName) ? target.nodeName : '';
+      },fullscreenEnabled:function() {
+        return document.fullscreenEnabled
+        // Safari 13.0.3 on macOS Catalina 10.15.1 still ships with prefixed webkitFullscreenEnabled.
+        // TODO: If Safari at some point ships with unprefixed version, update the version check above.
+        || document.webkitFullscreenEnabled
+         ;
+      }};
+  
+  var UTF8Decoder = typeof TextDecoder != 'undefined' ? new TextDecoder('utf8') : undefined;
+  
+    /**
+     * Given a pointer 'idx' to a null-terminated UTF8-encoded string in the given
+     * array that contains uint8 values, returns a copy of that string as a
+     * Javascript String object.
+     * heapOrArray is either a regular array, or a JavaScript typed array view.
+     * @param {number} idx
+     * @param {number=} maxBytesToRead
+     * @return {string}
+     */
+  function UTF8ArrayToString(heapOrArray, idx, maxBytesToRead) {
+      var endIdx = idx + maxBytesToRead;
+      var endPtr = idx;
+      // TextDecoder needs to know the byte length in advance, it doesn't stop on
+      // null terminator by itself.  Also, use the length info to avoid running tiny
+      // strings through TextDecoder, since .subarray() allocates garbage.
+      // (As a tiny code save trick, compare endPtr against endIdx using a negation,
+      // so that undefined means Infinity)
+      while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
+  
+      if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
+        return UTF8Decoder.decode(heapOrArray.subarray(idx, endPtr));
+      }
+      var str = '';
+      // If building with TextDecoder, we have already computed the string length
+      // above, so test loop end condition against that
+      while (idx < endPtr) {
+        // For UTF8 byte structure, see:
+        // http://en.wikipedia.org/wiki/UTF-8#Description
+        // https://www.ietf.org/rfc/rfc2279.txt
+        // https://tools.ietf.org/html/rfc3629
+        var u0 = heapOrArray[idx++];
+        if (!(u0 & 0x80)) { str += String.fromCharCode(u0); continue; }
+        var u1 = heapOrArray[idx++] & 63;
+        if ((u0 & 0xE0) == 0xC0) { str += String.fromCharCode(((u0 & 31) << 6) | u1); continue; }
+        var u2 = heapOrArray[idx++] & 63;
+        if ((u0 & 0xF0) == 0xE0) {
+          u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
+        } else {
+          if ((u0 & 0xF8) != 0xF0) warnOnce('Invalid UTF-8 leading byte ' + ptrToString(u0) + ' encountered when deserializing a UTF-8 string in wasm memory to a JS string!');
+          u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heapOrArray[idx++] & 63);
+        }
+  
+        if (u0 < 0x10000) {
+          str += String.fromCharCode(u0);
+        } else {
+          var ch = u0 - 0x10000;
+          str += String.fromCharCode(0xD800 | (ch >> 10), 0xDC00 | (ch & 0x3FF));
+        }
+      }
+      return str;
+    }
+  
+  
+    /**
+     * Given a pointer 'ptr' to a null-terminated UTF8-encoded string in the
+     * emscripten HEAP, returns a copy of that string as a Javascript String object.
+     *
+     * @param {number} ptr
+     * @param {number=} maxBytesToRead - An optional length that specifies the
+     *   maximum number of bytes to read. You can omit this parameter to scan the
+     *   string until the first 0 byte. If maxBytesToRead is passed, and the string
+     *   at [ptr, ptr+maxBytesToReadr[ contains a null byte in the middle, then the
+     *   string will cut short at that byte index (i.e. maxBytesToRead will not
+     *   produce a string of exact length [ptr, ptr+maxBytesToRead[) N.B. mixing
+     *   frequent uses of UTF8ToString() with and without maxBytesToRead may throw
+     *   JS JIT optimizations off, so it is worth to consider consistently using one
+     * @return {string}
+     */
+  function UTF8ToString(ptr, maxBytesToRead) {
+      assert(typeof ptr == 'number');
+      return ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : '';
+    }
+  function maybeCStringToJsString(cString) {
+      // "cString > 2" checks if the input is a number, and isn't of the special
+      // values we accept here, EMSCRIPTEN_EVENT_TARGET_* (which map to 0, 1, 2).
+      // In other words, if cString > 2 then it's a pointer to a valid place in
+      // memory, and points to a C string.
+      return cString > 2 ? UTF8ToString(cString) : cString;
+    }
+  
+  var specialHTMLTargets = [0, typeof document != 'undefined' ? document : 0, typeof window != 'undefined' ? window : 0];
+  function findEventTarget(target) {
+      target = maybeCStringToJsString(target);
+      var domElement = specialHTMLTargets[target] || (typeof document != 'undefined' ? document.querySelector(target) : undefined);
+      return domElement;
+    }
+  function findCanvasEventTarget(target) { return findEventTarget(target); }
+  function _emscripten_get_canvas_element_size(target, width, height) {
+      var canvas = findCanvasEventTarget(target);
+      if (!canvas) return -4;
+      HEAP32[((width)>>2)] = canvas.width;
+      HEAP32[((height)>>2)] = canvas.height;
     }
 
   function webgl_enable_ANGLE_instanced_arrays(ctx) {
@@ -4896,6 +4993,15 @@ function dbg(text) {
     }
   
   
+  var SYSCALLS = {varargs:undefined,get:function() {
+        assert(SYSCALLS.varargs != undefined);
+        SYSCALLS.varargs += 4;
+        var ret = HEAP32[(((SYSCALLS.varargs)-(4))>>2)];
+        return ret;
+      },getStr:function(ptr) {
+        var ret = UTF8ToString(ptr);
+        return ret;
+      }};
   function _proc_exit(code) {
       EXITSTATUS = code;
       if (!keepRuntimeAlive()) {
@@ -5729,201 +5835,6 @@ function dbg(text) {
       setMainLoop(browserIterationFunc, fps, simulateInfiniteLoop);
     }
 
-  function withStackSave(f) {
-      var stack = stackSave();
-      var ret = f();
-      stackRestore(stack);
-      return ret;
-    }
-  var JSEvents = {inEventHandler:0,removeAllEventListeners:function() {
-        for (var i = JSEvents.eventHandlers.length-1; i >= 0; --i) {
-          JSEvents._removeHandler(i);
-        }
-        JSEvents.eventHandlers = [];
-        JSEvents.deferredCalls = [];
-      },registerRemoveEventListeners:function() {
-        if (!JSEvents.removeEventListenersRegistered) {
-          __ATEXIT__.push(JSEvents.removeAllEventListeners);
-          JSEvents.removeEventListenersRegistered = true;
-        }
-      },deferredCalls:[],deferCall:function(targetFunction, precedence, argsList) {
-        function arraysHaveEqualContent(arrA, arrB) {
-          if (arrA.length != arrB.length) return false;
-  
-          for (var i in arrA) {
-            if (arrA[i] != arrB[i]) return false;
-          }
-          return true;
-        }
-        // Test if the given call was already queued, and if so, don't add it again.
-        for (var i in JSEvents.deferredCalls) {
-          var call = JSEvents.deferredCalls[i];
-          if (call.targetFunction == targetFunction && arraysHaveEqualContent(call.argsList, argsList)) {
-            return;
-          }
-        }
-        JSEvents.deferredCalls.push({
-          targetFunction: targetFunction,
-          precedence: precedence,
-          argsList: argsList
-        });
-  
-        JSEvents.deferredCalls.sort(function(x,y) { return x.precedence < y.precedence; });
-      },removeDeferredCalls:function(targetFunction) {
-        for (var i = 0; i < JSEvents.deferredCalls.length; ++i) {
-          if (JSEvents.deferredCalls[i].targetFunction == targetFunction) {
-            JSEvents.deferredCalls.splice(i, 1);
-            --i;
-          }
-        }
-      },canPerformEventHandlerRequests:function() {
-        return JSEvents.inEventHandler && JSEvents.currentEventHandler.allowsDeferredCalls;
-      },runDeferredCalls:function() {
-        if (!JSEvents.canPerformEventHandlerRequests()) {
-          return;
-        }
-        for (var i = 0; i < JSEvents.deferredCalls.length; ++i) {
-          var call = JSEvents.deferredCalls[i];
-          JSEvents.deferredCalls.splice(i, 1);
-          --i;
-          call.targetFunction.apply(null, call.argsList);
-        }
-      },eventHandlers:[],removeAllHandlersOnTarget:function(target, eventTypeString) {
-        for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
-          if (JSEvents.eventHandlers[i].target == target && 
-            (!eventTypeString || eventTypeString == JSEvents.eventHandlers[i].eventTypeString)) {
-             JSEvents._removeHandler(i--);
-           }
-        }
-      },_removeHandler:function(i) {
-        var h = JSEvents.eventHandlers[i];
-        h.target.removeEventListener(h.eventTypeString, h.eventListenerFunc, h.useCapture);
-        JSEvents.eventHandlers.splice(i, 1);
-      },registerOrRemoveHandler:function(eventHandler) {
-        var jsEventHandler = function jsEventHandler(event) {
-          // Increment nesting count for the event handler.
-          ++JSEvents.inEventHandler;
-          JSEvents.currentEventHandler = eventHandler;
-          // Process any old deferred calls the user has placed.
-          JSEvents.runDeferredCalls();
-          // Process the actual event, calls back to user C code handler.
-          eventHandler.handlerFunc(event);
-          // Process any new deferred calls that were placed right now from this event handler.
-          JSEvents.runDeferredCalls();
-          // Out of event handler - restore nesting count.
-          --JSEvents.inEventHandler;
-        };
-        
-        if (eventHandler.callbackfunc) {
-          eventHandler.eventListenerFunc = jsEventHandler;
-          eventHandler.target.addEventListener(eventHandler.eventTypeString, jsEventHandler, eventHandler.useCapture);
-          JSEvents.eventHandlers.push(eventHandler);
-          JSEvents.registerRemoveEventListeners();
-        } else {
-          for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
-            if (JSEvents.eventHandlers[i].target == eventHandler.target
-             && JSEvents.eventHandlers[i].eventTypeString == eventHandler.eventTypeString) {
-               JSEvents._removeHandler(i--);
-             }
-          }
-        }
-      },getNodeNameForTarget:function(target) {
-        if (!target) return '';
-        if (target == window) return '#window';
-        if (target == screen) return '#screen';
-        return (target && target.nodeName) ? target.nodeName : '';
-      },fullscreenEnabled:function() {
-        return document.fullscreenEnabled
-        // Safari 13.0.3 on macOS Catalina 10.15.1 still ships with prefixed webkitFullscreenEnabled.
-        // TODO: If Safari at some point ships with unprefixed version, update the version check above.
-        || document.webkitFullscreenEnabled
-         ;
-      }};
-  
-  
-  
-  var specialHTMLTargets = [0, typeof document != 'undefined' ? document : 0, typeof window != 'undefined' ? window : 0];
-  function getBoundingClientRect(e) {
-      return specialHTMLTargets.indexOf(e) < 0 ? e.getBoundingClientRect() : {'left':0,'top':0};
-    }
-  
-  function fillMouseEventData(eventStruct, e, target) {
-      assert(eventStruct % 4 == 0);
-      HEAPF64[((eventStruct)>>3)] = e.timeStamp;
-      var idx = eventStruct >> 2;
-      HEAP32[idx + 2] = e.screenX;
-      HEAP32[idx + 3] = e.screenY;
-      HEAP32[idx + 4] = e.clientX;
-      HEAP32[idx + 5] = e.clientY;
-      HEAP32[idx + 6] = e.ctrlKey;
-      HEAP32[idx + 7] = e.shiftKey;
-      HEAP32[idx + 8] = e.altKey;
-      HEAP32[idx + 9] = e.metaKey;
-      HEAP16[idx*2 + 20] = e.button;
-      HEAP16[idx*2 + 21] = e.buttons;
-  
-      HEAP32[idx + 11] = e["movementX"]
-        ;
-  
-      HEAP32[idx + 12] = e["movementY"]
-        ;
-  
-      var rect = getBoundingClientRect(target);
-      HEAP32[idx + 13] = e.clientX - rect.left;
-      HEAP32[idx + 14] = e.clientY - rect.top;
-  
-    }
-  
-  function maybeCStringToJsString(cString) {
-      // "cString > 2" checks if the input is a number, and isn't of the special
-      // values we accept here, EMSCRIPTEN_EVENT_TARGET_* (which map to 0, 1, 2).
-      // In other words, if cString > 2 then it's a pointer to a valid place in
-      // memory, and points to a C string.
-      return cString > 2 ? UTF8ToString(cString) : cString;
-    }
-  
-  function findEventTarget(target) {
-      target = maybeCStringToJsString(target);
-      var domElement = specialHTMLTargets[target] || (typeof document != 'undefined' ? document.querySelector(target) : undefined);
-      return domElement;
-    }
-  
-  
-  function registerWheelEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      if (!JSEvents.wheelEvent) JSEvents.wheelEvent = _malloc( 104 );
-  
-      // The DOM Level 3 events spec event 'wheel'
-      var wheelHandlerFunc = function(e = event) {
-        var wheelEvent = JSEvents.wheelEvent;
-        fillMouseEventData(wheelEvent, e, target);
-        HEAPF64[(((wheelEvent)+(72))>>3)] = e["deltaX"];
-        HEAPF64[(((wheelEvent)+(80))>>3)] = e["deltaY"];
-        HEAPF64[(((wheelEvent)+(88))>>3)] = e["deltaZ"];
-        HEAP32[(((wheelEvent)+(96))>>2)] = e["deltaMode"];
-        if (getWasmTableEntry(callbackfunc)(eventTypeId, wheelEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: target,
-        allowsDeferredCalls: true,
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: wheelHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_wheel_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-      target = findEventTarget(target);
-      if (typeof target.onwheel != 'undefined') {
-        registerWheelEventCallback(target, userData, useCapture, callbackfunc, 9, "wheel", targetThread);
-        return 0;
-      } else {
-        return -1;
-      }
-    }
-
   var ENV = {};
   
   function getExecutableName() {
@@ -6050,53 +5961,6 @@ function dbg(text) {
       HEAPU32[((pnum)>>2)] = num;
       return 0;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   
   
@@ -6841,144 +6705,12 @@ function dbg(text) {
         };
         return table[param];
       }};
-  function _glfwCreateStandardCursor(shape) {}
-
   function _glfwCreateWindow(width, height, title, monitor, share) {
       return GLFW.createWindow(width, height, title, monitor, share);
     }
 
-  function _glfwCreateWindowSurface(instance, winid, allocator, surface) { throw "glfwCreateWindowSurface is not implemented."; }
-
-  function _glfwDestroyCursor(cursor) {}
-
-  function _glfwDestroyWindow(winid) {
-      return GLFW.destroyWindow(winid);
-    }
-
-  function _glfwFocusWindow(winid) {}
-
-  function _glfwGetClipboardString(win) {}
-
-  function _glfwGetCurrentContext() {
-      return GLFW.active ? GLFW.active.id : 0;
-    }
-
-  function _glfwGetCursorPos(winid, x, y) {
-      GLFW.getCursorPos(winid, x, y);
-    }
-
-  function _glfwGetFramebufferSize(winid, width, height) {
-      var ww = 0;
-      var wh = 0;
-  
-      var win = GLFW.WindowFromId(winid);
-      if (win) {
-        ww = win.width;
-        wh = win.height;
-      }
-  
-      if (width) {
-        HEAP32[((width)>>2)] = ww;
-      }
-  
-      if (height) {
-        HEAP32[((height)>>2)] = wh;
-      }
-    }
-
-  function _glfwGetInputMode(winid, mode) {
-      var win = GLFW.WindowFromId(winid);
-      if (!win) return;
-  
-      switch (mode) {
-        case 0x00033001: { // GLFW_CURSOR
-          if (Browser.pointerLock) {
-            win.inputModes[mode] = 0x00034003; // GLFW_CURSOR_DISABLED
-          } else {
-            win.inputModes[mode] = 0x00034001; // GLFW_CURSOR_NORMAL
-          }
-        }
-      }
-  
-      return win.inputModes[mode];
-    }
-
-  function _glfwGetJoystickAxes(joy, count) {
-      GLFW.refreshJoysticks();
-  
-      var state = GLFW.joys[joy];
-      if (!state || !state.axes) {
-        HEAP32[((count)>>2)] = 0;
-        return;
-      }
-  
-      HEAP32[((count)>>2)] = state.axesCount;
-      return state.axes;
-    }
-
-  function _glfwGetJoystickButtons(joy, count) {
-      GLFW.refreshJoysticks();
-  
-      var state = GLFW.joys[joy];
-      if (!state || !state.buttons) {
-        HEAP32[((count)>>2)] = 0;
-        return;
-      }
-  
-      HEAP32[((count)>>2)] = state.buttonsCount;
-      return state.buttons;
-    }
-
   function _glfwGetKey(winid, key) {
       return GLFW.getKey(winid, key);
-    }
-
-  function _glfwGetMonitorContentScale(monitor, x, y) {
-      HEAPF32[((x)>>2)] = GLFW.scale;
-      HEAPF32[((y)>>2)] = GLFW.scale;
-    }
-
-  function _glfwGetMonitorPos(monitor, x, y) {
-      HEAP32[((x)>>2)] = 0;
-      HEAP32[((y)>>2)] = 0;
-    }
-
-  function _glfwGetMonitorWorkarea(monitor, x, y, w, h) {
-      HEAP32[((x)>>2)] = 0;
-      HEAP32[((y)>>2)] = 0;
-      
-      HEAP32[((w)>>2)] = screen.availWidth;
-      HEAP32[((h)>>2)] = screen.availHeight;
-    }
-
-  
-  function _glfwGetMonitors(count) {
-      HEAP32[((count)>>2)] = 1;
-      if (!GLFW.monitors) {
-        GLFW.monitors = _malloc(4);
-        HEAP32[((GLFW.monitors)>>2)] = 1;
-      }
-      return GLFW.monitors;
-    }
-
-  function _glfwGetTime() {
-      return GLFW.getTime() - GLFW.initialTime;
-    }
-
-  function _glfwGetVideoMode(monitor) { return 0; }
-
-  function _glfwGetWindowAttrib(winid, attrib) {
-      var win = GLFW.WindowFromId(winid);
-      if (!win) return 0;
-      return win.attributes[attrib];
-    }
-
-  function _glfwGetWindowPos(winid, x, y) {
-      GLFW.getWindowPos(winid, x, y);
-    }
-
-  function _glfwGetWindowSize(winid, width, height) {
-      GLFW.getWindowSize(winid, width, height);
     }
 
   function _emscripten_get_device_pixel_ratio() {
@@ -7033,109 +6765,14 @@ function dbg(text) {
 
   function _glfwPollEvents() {}
 
-  function _glfwSetCharCallback(winid, cbfun) {
-      return GLFW.setCharCallback(winid, cbfun);
-    }
-
-  function _glfwSetClipboardString(win, string) {}
-
-  function _glfwSetCursor(winid, cursor) {}
-
-  function _glfwSetCursorEnterCallback(winid, cbfun) {
+  function _glfwSetWindowShouldClose(winid, value) {
       var win = GLFW.WindowFromId(winid);
-      if (!win) return null;
-      var prevcbfun = win.cursorEnterFunc;
-      win.cursorEnterFunc = cbfun;
-      return prevcbfun;
+      if (!win) return;
+      win.shouldClose = value;
     }
-
-  function _glfwSetCursorPos(winid, x, y) {
-      GLFW.setCursorPos(winid, x, y);
-    }
-
-  function _glfwSetCursorPosCallback(winid, cbfun) {
-      return GLFW.setCursorPosCallback(winid, cbfun);
-    }
-
-  function _glfwSetErrorCallback(cbfun) {
-      var prevcbfun = GLFW.errorFunc;
-      GLFW.errorFunc = cbfun;
-      return prevcbfun;
-    }
-
-  function _glfwSetInputMode(winid, mode, value) {
-      GLFW.setInputMode(winid, mode, value);
-    }
-
-  function _glfwSetKeyCallback(winid, cbfun) {
-      return GLFW.setKeyCallback(winid, cbfun);
-    }
-
-  function _glfwSetMonitorCallback(cbfun) {
-      var prevcbfun = GLFW.monitorFunc;
-      GLFW.monitorFunc = cbfun;
-      return prevcbfun;
-    }
-
-  function _glfwSetMouseButtonCallback(winid, cbfun) {
-      return GLFW.setMouseButtonCallback(winid, cbfun);
-    }
-
-  function _glfwSetScrollCallback(winid, cbfun) {
-      return GLFW.setScrollCallback(winid, cbfun);
-    }
-
-  function _glfwSetWindowCloseCallback(winid, cbfun) {
-      return GLFW.setWindowCloseCallback(winid, cbfun);
-    }
-
-  function _glfwSetWindowFocusCallback(winid, cbfun) {
-      var win = GLFW.WindowFromId(winid);
-      if (!win) return null;
-      var prevcbfun = win.windowFocusFunc;
-      win.windowFocusFunc = cbfun;
-      return prevcbfun;
-    }
-
-  function _glfwSetWindowOpacity(winid, opacity) {
-      // error
-    }
-
-  function _glfwSetWindowPos(winid, x, y) {
-      GLFW.setWindowPos(winid, x, y);
-    }
-
-  function _glfwSetWindowPosCallback(winid, cbfun) {
-      var win = GLFW.WindowFromId(winid);
-      if (!win) return null;
-      var prevcbfun = win.windowPosFunc;
-      win.windowPosFunc = cbfun;
-      return prevcbfun;
-    }
-
-  function _glfwSetWindowSize(winid, width, height) {
-      GLFW.setWindowSize(winid, width, height);
-    }
-
-  function _glfwSetWindowSizeCallback(winid, cbfun) {
-      return GLFW.setWindowSizeCallback(winid, cbfun);
-    }
-
-  function _glfwSetWindowTitle(winid, title) {
-      GLFW.setWindowTitle(winid, title);
-    }
-
-  function _glfwShowWindow(winid) {}
 
   function _glfwSwapBuffers(winid) {
       GLFW.swapBuffers(winid);
-    }
-
-  
-  function _glfwSwapInterval(interval) {
-      interval = Math.abs(interval); // GLFW uses negative values to enable GLX_EXT_swap_control_tear, which we don't have, so just treat negative and positive the same.
-      if (interval == 0) _emscripten_set_main_loop_timing(0/*EM_TIMING_SETTIMEOUT*/, 0);
-      else _emscripten_set_main_loop_timing(1/*EM_TIMING_RAF*/, interval);
     }
 
   function _glfwTerminate() {
@@ -7518,14 +7155,6 @@ function dbg(text) {
     }
 
 
-
-  
-  function stringToUTF8OnStack(str) {
-      var size = lengthBytesUTF8(str) + 1;
-      var ret = stackAlloc(size);
-      stringToUTF8(str, ret, size);
-      return ret;
-    }
 var GLctx;;
 for (var i = 0; i < 32; ++i) tempFixedLengthArray.push(new Array(i));;
 var miniTempWebGLFloatBuffersStorage = new Float32Array(288);
@@ -7554,12 +7183,9 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var wasmImports = {
-  "__assert_fail": ___assert_fail,
   "__cxa_throw": ___cxa_throw,
-  "__syscall_fcntl64": ___syscall_fcntl64,
-  "__syscall_ioctl": ___syscall_ioctl,
-  "__syscall_openat": ___syscall_openat,
   "abort": _abort,
+  "emscripten_get_canvas_element_size": _emscripten_get_canvas_element_size,
   "emscripten_glActiveTexture": _emscripten_glActiveTexture,
   "emscripten_glAttachShader": _emscripten_glAttachShader,
   "emscripten_glBeginQuery": _emscripten_glBeginQuery,
@@ -7838,7 +7464,6 @@ var wasmImports = {
   "emscripten_memcpy_big": _emscripten_memcpy_big,
   "emscripten_resize_heap": _emscripten_resize_heap,
   "emscripten_set_main_loop": _emscripten_set_main_loop,
-  "emscripten_set_wheel_callback_on_thread": _emscripten_set_wheel_callback_on_thread,
   "environ_get": _environ_get,
   "environ_sizes_get": _environ_sizes_get,
   "exit": _exit,
@@ -7846,102 +7471,13 @@ var wasmImports = {
   "fd_read": _fd_read,
   "fd_seek": _fd_seek,
   "fd_write": _fd_write,
-  "glActiveTexture": _glActiveTexture,
-  "glAttachShader": _glAttachShader,
-  "glBindBuffer": _glBindBuffer,
-  "glBindTexture": _glBindTexture,
-  "glBindVertexArrayOES": _glBindVertexArrayOES,
-  "glBlendEquation": _glBlendEquation,
-  "glBlendEquationSeparate": _glBlendEquationSeparate,
-  "glBlendFuncSeparate": _glBlendFuncSeparate,
-  "glBufferData": _glBufferData,
-  "glBufferSubData": _glBufferSubData,
-  "glClear": _glClear,
-  "glClearColor": _glClearColor,
-  "glCompileShader": _glCompileShader,
-  "glCreateProgram": _glCreateProgram,
-  "glCreateShader": _glCreateShader,
-  "glDeleteBuffers": _glDeleteBuffers,
-  "glDeleteProgram": _glDeleteProgram,
-  "glDeleteShader": _glDeleteShader,
-  "glDeleteTextures": _glDeleteTextures,
-  "glDeleteVertexArraysOES": _glDeleteVertexArraysOES,
-  "glDetachShader": _glDetachShader,
-  "glDisable": _glDisable,
-  "glDrawElements": _glDrawElements,
-  "glEnable": _glEnable,
-  "glEnableVertexAttribArray": _glEnableVertexAttribArray,
-  "glGenBuffers": _glGenBuffers,
-  "glGenTextures": _glGenTextures,
-  "glGenVertexArraysOES": _glGenVertexArraysOES,
-  "glGetAttribLocation": _glGetAttribLocation,
-  "glGetIntegerv": _glGetIntegerv,
-  "glGetProgramInfoLog": _glGetProgramInfoLog,
-  "glGetProgramiv": _glGetProgramiv,
-  "glGetShaderInfoLog": _glGetShaderInfoLog,
-  "glGetShaderiv": _glGetShaderiv,
-  "glGetUniformLocation": _glGetUniformLocation,
-  "glIsEnabled": _glIsEnabled,
-  "glIsProgram": _glIsProgram,
-  "glLinkProgram": _glLinkProgram,
-  "glScissor": _glScissor,
-  "glShaderSource": _glShaderSource,
-  "glTexImage2D": _glTexImage2D,
-  "glTexParameteri": _glTexParameteri,
-  "glUniform1i": _glUniform1i,
-  "glUniformMatrix4fv": _glUniformMatrix4fv,
-  "glUseProgram": _glUseProgram,
-  "glVertexAttribPointer": _glVertexAttribPointer,
-  "glViewport": _glViewport,
-  "glfwCreateStandardCursor": _glfwCreateStandardCursor,
   "glfwCreateWindow": _glfwCreateWindow,
-  "glfwCreateWindowSurface": _glfwCreateWindowSurface,
-  "glfwDestroyCursor": _glfwDestroyCursor,
-  "glfwDestroyWindow": _glfwDestroyWindow,
-  "glfwFocusWindow": _glfwFocusWindow,
-  "glfwGetClipboardString": _glfwGetClipboardString,
-  "glfwGetCurrentContext": _glfwGetCurrentContext,
-  "glfwGetCursorPos": _glfwGetCursorPos,
-  "glfwGetFramebufferSize": _glfwGetFramebufferSize,
-  "glfwGetInputMode": _glfwGetInputMode,
-  "glfwGetJoystickAxes": _glfwGetJoystickAxes,
-  "glfwGetJoystickButtons": _glfwGetJoystickButtons,
   "glfwGetKey": _glfwGetKey,
-  "glfwGetMonitorContentScale": _glfwGetMonitorContentScale,
-  "glfwGetMonitorPos": _glfwGetMonitorPos,
-  "glfwGetMonitorWorkarea": _glfwGetMonitorWorkarea,
-  "glfwGetMonitors": _glfwGetMonitors,
-  "glfwGetTime": _glfwGetTime,
-  "glfwGetVideoMode": _glfwGetVideoMode,
-  "glfwGetWindowAttrib": _glfwGetWindowAttrib,
-  "glfwGetWindowPos": _glfwGetWindowPos,
-  "glfwGetWindowSize": _glfwGetWindowSize,
   "glfwInit": _glfwInit,
   "glfwMakeContextCurrent": _glfwMakeContextCurrent,
   "glfwPollEvents": _glfwPollEvents,
-  "glfwSetCharCallback": _glfwSetCharCallback,
-  "glfwSetClipboardString": _glfwSetClipboardString,
-  "glfwSetCursor": _glfwSetCursor,
-  "glfwSetCursorEnterCallback": _glfwSetCursorEnterCallback,
-  "glfwSetCursorPos": _glfwSetCursorPos,
-  "glfwSetCursorPosCallback": _glfwSetCursorPosCallback,
-  "glfwSetErrorCallback": _glfwSetErrorCallback,
-  "glfwSetInputMode": _glfwSetInputMode,
-  "glfwSetKeyCallback": _glfwSetKeyCallback,
-  "glfwSetMonitorCallback": _glfwSetMonitorCallback,
-  "glfwSetMouseButtonCallback": _glfwSetMouseButtonCallback,
-  "glfwSetScrollCallback": _glfwSetScrollCallback,
-  "glfwSetWindowCloseCallback": _glfwSetWindowCloseCallback,
-  "glfwSetWindowFocusCallback": _glfwSetWindowFocusCallback,
-  "glfwSetWindowOpacity": _glfwSetWindowOpacity,
-  "glfwSetWindowPos": _glfwSetWindowPos,
-  "glfwSetWindowPosCallback": _glfwSetWindowPosCallback,
-  "glfwSetWindowSize": _glfwSetWindowSize,
-  "glfwSetWindowSizeCallback": _glfwSetWindowSizeCallback,
-  "glfwSetWindowTitle": _glfwSetWindowTitle,
-  "glfwShowWindow": _glfwShowWindow,
+  "glfwSetWindowShouldClose": _glfwSetWindowShouldClose,
   "glfwSwapBuffers": _glfwSwapBuffers,
-  "glfwSwapInterval": _glfwSwapInterval,
   "glfwTerminate": _glfwTerminate,
   "glfwWindowHint": _glfwWindowHint,
   "strftime_l": _strftime_l
@@ -7950,7 +7486,7 @@ var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = createExportWrapper("__wasm_call_ctors");
 /** @type {function(...*):?} */
-var _main = Module["_main"] = createExportWrapper("__main_argc_argv");
+var _main = Module["_main"] = createExportWrapper("main");
 /** @type {function(...*):?} */
 var _malloc = createExportWrapper("malloc");
 /** @type {function(...*):?} */
@@ -7993,8 +7529,6 @@ var _emscripten_stack_get_current = function() {
 /** @type {function(...*):?} */
 var ___cxa_is_pointer_type = createExportWrapper("__cxa_is_pointer_type");
 /** @type {function(...*):?} */
-var dynCall_iijii = Module["dynCall_iijii"] = createExportWrapper("dynCall_iijii");
-/** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 /** @type {function(...*):?} */
 var dynCall_viijii = Module["dynCall_viijii"] = createExportWrapper("dynCall_viijii");
@@ -8013,6 +7547,7 @@ var missingLibrarySymbols = [
   'zeroMemory',
   'emscripten_realloc_buffer',
   'ydayFromDate',
+  'setErrNo',
   'inetPton4',
   'inetNtop4',
   'inetPton6',
@@ -8075,11 +7610,14 @@ var missingLibrarySymbols = [
   'UTF32ToString',
   'stringToUTF32',
   'lengthBytesUTF32',
+  'stringToUTF8OnStack',
   'getSocketFromFD',
   'getSocketAddress',
   'registerKeyEventCallback',
-  'findCanvasEventTarget',
+  'getBoundingClientRect',
+  'fillMouseEventData',
   'registerMouseEventCallback',
+  'registerWheelEventCallback',
   'registerUiEventCallback',
   'registerFocusEventCallback',
   'fillDeviceOrientationEventData',
@@ -8187,7 +7725,6 @@ var unexportedSymbols = [
   'addDays',
   'ERRNO_CODES',
   'ERRNO_MESSAGES',
-  'setErrNo',
   'DNS',
   'Protocols',
   'Sockets',
@@ -8222,16 +7759,13 @@ var unexportedSymbols = [
   'stringToAscii',
   'UTF16Decoder',
   'stringToNewUTF8',
-  'stringToUTF8OnStack',
   'writeArrayToMemory',
   'SYSCALLS',
   'JSEvents',
   'specialHTMLTargets',
   'maybeCStringToJsString',
   'findEventTarget',
-  'getBoundingClientRect',
-  'fillMouseEventData',
-  'registerWheelEventCallback',
+  'findCanvasEventTarget',
   'currentFullscreenStrategy',
   'restoreOldWindowedStyle',
   'ExitStatus',
@@ -8297,21 +7831,14 @@ dependenciesFulfilled = function runCaller() {
   if (!calledRun) dependenciesFulfilled = runCaller; // try this again later, after new deps are fulfilled
 };
 
-function callMain(args = []) {
+function callMain() {
   assert(runDependencies == 0, 'cannot call main when async dependencies remain! (listen on Module["onRuntimeInitialized"])');
   assert(__ATPRERUN__.length == 0, 'cannot call main when preRun functions remain to be called');
 
   var entryFunction = _main;
 
-  args.unshift(thisProgram);
-
-  var argc = args.length;
-  var argv = stackAlloc((argc + 1) * 4);
-  var argv_ptr = argv >> 2;
-  args.forEach((arg) => {
-    HEAP32[argv_ptr++] = stringToUTF8OnStack(arg);
-  });
-  HEAP32[argv_ptr] = 0;
+  var argc = 0;
+  var argv = 0;
 
   try {
 
@@ -8335,7 +7862,7 @@ function stackCheckInit() {
   writeStackCookie();
 }
 
-function run(args = arguments_) {
+function run() {
 
   if (runDependencies > 0) {
     return;
@@ -8366,7 +7893,7 @@ function run(args = arguments_) {
     readyPromiseResolve(Module);
     if (Module['onRuntimeInitialized']) Module['onRuntimeInitialized']();
 
-    if (shouldRunNow) callMain(args);
+    if (shouldRunNow) callMain();
 
     postRun();
   }
