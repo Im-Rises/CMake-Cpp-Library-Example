@@ -21,6 +21,7 @@ README.md file of each directory.
 ### Emscripten Compilation list
 
 - [x] Emscripten GLFW OpenGL ES 3.0 WebGL2 compilation
+- [x] Emscripten with React example
 - [x] Emscripten SDL2 OpenGL ES 3.0 WebGL2 compilation
 
 ### Library list
