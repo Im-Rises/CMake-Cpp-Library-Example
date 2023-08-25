@@ -29,7 +29,7 @@ jobs:
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake -S . -B ${{github.workspace}}/build -D PROJECT_TO_BUILD="Comp-emscripten-glfw-opengles;Comp-emscripten-glfw-opengles-imgui;Comp-emscripten-sdl2-opengles;Comp-emscripten-sdl2-opengles-imgui;Lib_OpenCL;Lib_OpenCL_CPP;Lib_OpenMP;Lib_OpenMPI;Lib_PThreads;Lib_SDL2;Lib_SFML;Libs-glfw-glad-opengl;Libs-glfw-glad-opengl-imgui;Libs-sdl2-glad-opengl;Libs-sdl2-glad-opengl-imgui" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -S . -B ${{github.workspace}}/build -D PROJECT_TO_BUILD="Comp-emscripten-glfw-opengles;Comp-emscripten-glfw-opengles-imgui;Comp-emscripten-sdl2-opengles;Comp-emscripten-sdl2-opengles-imgui;Lib_OpenCL;Lib_OpenCL_CPP;Lib_OpenMP;Lib_OpenMPI;Lib_PThreads;Lib_SDL2;Lib_SFML;Libs-glfw-glad-opengl;Libs-glfw-glad-opengl-imgui;Libs-sdl2-glad-opengl;Libs-sdl2-glad-opengl-imgui;Module_CPP" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
         # Build your program with the given configuration
@@ -79,7 +79,7 @@ jobs:
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake -S . -B ${{github.workspace}}/build -D PROJECT_TO_BUILD="Comp-emscripten-glfw-opengles;Comp-emscripten-glfw-opengles-imgui;Comp-emscripten-sdl2-opengles;Comp-emscripten-sdl2-opengles-imgui;Lib_OpenMPI;Lib_PThreads;Lib_SDL2;Lib_SFML;Libs-glfw-glad-opengl;Libs-glfw-glad-opengl-imgui;Libs-sdl2-glad-opengl;Libs-sdl2-glad-opengl-imgui" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -S . -B ${{github.workspace}}/build -D PROJECT_TO_BUILD="Comp-emscripten-glfw-opengles;Comp-emscripten-glfw-opengles-imgui;Comp-emscripten-sdl2-opengles;Comp-emscripten-sdl2-opengles-imgui;Lib_OpenMPI;Lib_PThreads;Lib_SDL2;Lib_SFML;Libs-glfw-glad-opengl;Libs-glfw-glad-opengl-imgui;Libs-sdl2-glad-opengl;Libs-sdl2-glad-opengl-imgui;Module_CPP" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
         # Build your program with the given configuration
