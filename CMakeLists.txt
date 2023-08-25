@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.26)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -55,5 +55,8 @@ else ()
     add_subdirectory(${PROJECT_NAME})
 
     project("Libs-sdl2-glad-opengl-imgui")
+    add_subdirectory(${PROJECT_NAME})
+
+    project("Module_CPP")
     add_subdirectory(${PROJECT_NAME})
 endif ()
