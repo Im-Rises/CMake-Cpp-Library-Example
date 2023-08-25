@@ -50,6 +50,10 @@ README.md file of each directory.
 - [ ] Qt
 - [ ] ...
 
+### C++ Modules with CMake
+
+- [x] CMake C++20 with modules project
+
 ## How to compile
 
 According to your OS, the build setup is different. Check the appropriate indication according to the README.md file of
