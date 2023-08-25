@@ -21,6 +21,7 @@ README.md file of each directory.
 ### Emscripten Compilation list
 
 - [x] Emscripten GLFW OpenGL ES 3.0 WebGL2 compilation
+- [x] Emscripten with React example
 - [x] Emscripten SDL2 OpenGL ES 3.0 WebGL2 compilation
 
 ### Library list
@@ -48,6 +49,10 @@ README.md file of each directory.
 - [ ] Boost
 - [ ] Qt
 - [ ] ...
+
+### C++ Modules with CMake
+
+- [x] CMake C++20 with modules project
 
 ## How to compile
 
