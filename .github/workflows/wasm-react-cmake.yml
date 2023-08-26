@@ -33,6 +33,9 @@ jobs:
           cd Comp-emscripten-react
           emcmake cmake .
           emmake make
+          mv ./comp-emscripten-react.html ./demo-react-emscripten/emscripten-module
+          mv ./comp-emscripten-react.js ./demo-react-emscripten/emscripten-module
+          mv ./comp-emscripten-react.wasm ./demo-react-emscripten/emscripten-module
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
