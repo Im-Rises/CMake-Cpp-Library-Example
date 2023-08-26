@@ -8,11 +8,11 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     strategy:
-      matrix:
-        node-version: [ "14.x", "16.x", "18.x" ]
+      node-version: 18.x
       steps:
         - uses: mymindstorm/setup-emsdk@v11
           with:
@@ -22,25 +22,19 @@ jobs:
 
         - uses: actions/checkout@v3
 
-        - name: Build
+        - name: Build Wasm
           run: |
             cd Comp-emscripten-react
             emcmake cmake .
             emmake make
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Restore Dependencies
-        run: npm ci
-        working-directory: ./si-web-react
-
-      - name: Build
-        run: npm run build --if-present
-        working-directory: ./si-web-react
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+            cache: 'npm'
+            cache-dependency-path: si-web-react/package-lock.json
+        - run: npm install
+          working-directory: ./si-web-react
+        - run: npm run build --if-present
+          working-directory: ./si-web-react
