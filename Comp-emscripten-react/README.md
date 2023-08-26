@@ -1,25 +1,12 @@
-# Comp-emscripten-glfw-opengles-imgui
+# Comp-emscripten-react
 
-Version: GLFW 3.3.8, GLAD 0.1.36, OpenGL 3.3, OpenGL ES 3.0, ImGui Docking 1.89.3
+Version: GLFW 3.3.8, GLAD 0.1.36, OpenGL 3.3, OpenGL ES 3.0
 
 To build the project, you need to use a UNIX system, like Ubuntu or if you're on Windows you can use WSL.
 
-The project is made to be buildable as a desktop application, but it can also be build as a web application with
-Emscripten.
-
-> **Note**  
-> The project can also be build as a desktop app, if you use directly your IDE or the normal CMake commands like
-> in the other examples:
-> `cmake -B <output directory> -DCMAKE_BUILD_TYPE=<build optimization flag>`  
-> `cmake --build <output directory> --config <build optimization flag>`
-
-> **Note**
-> You can use the recommended index.html file from the ImGui repository, but you have to change the path to the
-> compiled javascript file in it. The file is located in the `dependencies/imgui/libs/emscripten/` directory.
-
 ## Setup
 
-Then you have to install Emscripten. You can find
+You have to install Emscripten. You can find
 instructions on how to install Emscripten here:  
 <https://emscripten.org/docs/getting_started/downloads.html>
 
@@ -37,6 +24,10 @@ sudo apt install libglfw3-dev
 > The project is configured for linux, using another OS may require some changes.
 > If you are using Windows, you can use WSL to build the project like it is recommended by Emscripten team.
 
+Of course, you need React installed. You can install it by typing this command.
+There is a different way to create a React project. You can find more information here:
+<https://reactjs.org/docs/create-a-new-react-app.html>
+
 ## Build the project
 
 Once you have Emscripten and CMake installed run this command in the project root directory:
@@ -53,17 +44,19 @@ emmake make
 
 The commands have to be run in the project Comp-emscripten-glfw-opengles directory.
 
-## Test the web build
+## Run the project
 
-To test the project, you can use a web server. You can use the `python` web server for example:
-You can install python from here: <https://www.python.org/downloads/>
-
-Then run this command in the build directory:
+Just build the react website with the command:
 
 ```bash
-python -m http.server
+npm run build
 ```
 
-Be careful, to type the command in the build directory.
+Then run the command:
 
-Then open your browser and go to <http://localhost:8000>
+```bash
+emrun --no_browser --port 8080 .
+```
+
+To run the project, you need to go to the website:  
+<http://localhost:8080/>
