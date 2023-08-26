@@ -2,44 +2,46 @@ name: Node.js Wasm CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [ 18.x ]
-      steps:
-        - name: Check out code
-          uses: actions/checkout@v2
+        node-version: [ 16.x ]
+        #        node-version: [ 12.x, 14.x, 16.x ]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-        - name: Setup Emscripten
-          uses: mymindstorm/setup-emsdk@v1
-          with:
-            emscripten-version: 2.0.30
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
 
-        - name: Verify Emscripten
-          run: emcc -v
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v1
+        with:
+          emscripten-version: 2.0.30
 
-        - name: Build Wasm
-          run: |
-            cd Comp-emscripten-react
-            emcmake cmake .
-            emmake make
+      - name: Verify Emscripten
+        run: emcc -v
 
-        - name: Setup Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@v2
-          with:
-            node-version: ${{ matrix.node-version }}
+      - name: Build Wasm
+        run: |
+          cd Comp-emscripten-react
+          emcmake cmake .
+          emmake make
 
-        - name: Install Dependencies and Build
-          run: |
-            cd si-web-react
-            npm install
-            npm run build --if-present
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies and Build
+        run: |
+          cd si-web-react
+          npm install
+          npm run build --if-present
