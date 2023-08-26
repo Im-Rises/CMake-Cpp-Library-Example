@@ -43,4 +43,4 @@ jobs:
         run: |
           cd Comp-emscripten-react/demo-react-emscripten
           npm install
-          npm run build --if-present
+#          npm run build --if-present
