@@ -41,6 +41,5 @@ jobs:
 
       - name: Install Dependencies and Build
         run: |
-          cd Comp-emscripten-react
           npm install
           npm run build --if-present
