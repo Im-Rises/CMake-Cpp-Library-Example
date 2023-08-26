@@ -2,25 +2,30 @@ name: Node.js Wasm CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
-      node-version: 18.x
+      matrix:
+        node-version: [ 18.x ]
       steps:
-        - uses: mymindstorm/setup-emsdk@v11
-          with:
-            version: 3.1.37
-        - name: Verify
-          run: emcc -v
+        - name: Check out code
+          uses: actions/checkout@v2
 
-        - uses: actions/checkout@v3
+        - name: Setup Emscripten
+          uses: mymindstorm/setup-emsdk@v1
+          with:
+            emscripten-version: 2.0.30
+
+        - name: Verify Emscripten
+          run: emcc -v
 
         - name: Build Wasm
           run: |
@@ -28,13 +33,13 @@ jobs:
             emcmake cmake .
             emmake make
 
-        - name: Use Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@v3
+        - name: Setup Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v2
           with:
             node-version: ${{ matrix.node-version }}
-            cache: 'npm'
-            cache-dependency-path: si-web-react/package-lock.json
-        - run: npm install
-          working-directory: ./si-web-react
-        - run: npm run build --if-present
-          working-directory: ./si-web-react
+
+        - name: Install Dependencies and Build
+          run: |
+            cd si-web-react
+            npm install
+            npm run build --if-present
